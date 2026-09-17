@@ -395,7 +395,7 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 - [x] Limpiar scaffold (`stores/counter.ts`, `App.vue` de ejemplo, README genérico, `install.ps1` si no pertenece al proyecto).
 - [x] Agregar dependencias (2.1). Scripts `db:*` en `package.json` (sección 10).
 - [x] `supabase init`; `.env.example`, tipado en `env.d.ts`.
-- [ ] `supabase start` + crear `.env.local` con los valores locales.
+- [x] `supabase start` + crear `.env.local` con los valores locales.
 - [x] `lib/supabase.ts` con cliente tipado.
 - [x] `assets/main.css` con tokens y tema. Layout base + navegación + rutas lazy placeholder.
 
