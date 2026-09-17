@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { toast } from 'vue-sonner'
 import { ChevronLeft, ChevronUp, ChevronDown, Plus, Trash2 } from '@lucide/vue'
 import type { Exercise, RoutineExerciseInput } from '@/domain/models'
@@ -8,6 +9,7 @@ import { routineInputSchema } from '@/domain/schemas'
 import { displayWeight, inputToKg } from '@/domain/units/weight'
 import { useRoutinesStore } from '@/stores/routines'
 import { useExercisesStore } from '@/stores/exercises'
+import { useExerciseName } from '@/composables/useExerciseName'
 import { useProfileStore } from '@/stores/profile'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -16,6 +18,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Skeleton } from '@/components/ui/skeleton'
 import ExercisePickerSheet from '@/components/exercise/ExercisePickerSheet.vue'
 
+const { t } = useI18n()
+const { nameById } = useExerciseName()
 const route = useRoute()
 const router = useRouter()
 const routines = useRoutinesStore()
@@ -37,7 +41,7 @@ onMounted(async () => {
   if (id.value) {
     const routine = await routines.get(id.value)
     if (!routine) {
-      toast.error('Rutina no encontrada')
+      toast.error(t('routines.edit.notFound'))
       await router.replace({ name: 'routines' })
       return
     }
@@ -53,10 +57,6 @@ onMounted(async () => {
   }
   ready.value = true
 })
-
-function exerciseName(exerciseId: string) {
-  return exercises.byId.get(exerciseId)?.name ?? 'Ejercicio'
-}
 
 function addExercise(exercise: Exercise) {
   items.value.push({
@@ -93,17 +93,19 @@ async function save() {
     exercises: items.value,
   })
   if (!parsed.success) {
-    toast.error(parsed.error.issues[0]?.message ?? 'Revisa los datos')
+    toast.error(t(parsed.error.issues[0]?.message ?? 'routines.edit.checkData'))
     return
   }
   saving.value = true
   try {
     if (id.value) await routines.update(id.value, parsed.data)
     else await routines.create(parsed.data)
-    toast.success('Rutina guardada')
+    toast.success(t('routines.edit.saved'))
     await router.replace({ name: 'routines' })
   } catch (e) {
-    toast.error('No se pudo guardar', { description: e instanceof Error ? e.message : undefined })
+    toast.error(t('common.couldNotSave'), {
+      description: e instanceof Error ? e.message : undefined,
+    })
   } finally {
     saving.value = false
   }
@@ -113,12 +115,12 @@ async function save() {
 <template>
   <header class="flex items-center gap-2">
     <Button variant="ghost" size="icon" as-child>
-      <RouterLink :to="{ name: 'routines' }" aria-label="Volver">
+      <RouterLink :to="{ name: 'routines' }" :aria-label="t('common.back')">
         <ChevronLeft class="size-5" />
       </RouterLink>
     </Button>
     <h1 class="flex-1 text-2xl font-semibold tracking-tight">
-      {{ id ? 'Editar rutina' : 'Nueva rutina' }}
+      {{ id ? t('routines.edit.titleEdit') : t('routines.edit.titleNew') }}
     </h1>
   </header>
 
@@ -129,19 +131,19 @@ async function save() {
 
   <form v-else class="mt-4 grid gap-5" @submit.prevent="save">
     <div class="grid gap-2">
-      <Label for="routine-name">Nombre</Label>
+      <Label for="routine-name">{{ t('routines.edit.name') }}</Label>
       <Input id="routine-name" v-model="name" required maxlength="100" autocomplete="off" />
     </div>
     <div class="grid gap-2">
-      <Label for="routine-notes">Notas</Label>
+      <Label for="routine-notes">{{ t('routines.edit.notes') }}</Label>
       <Textarea id="routine-notes" v-model="notes" rows="2" maxlength="2000" />
     </div>
 
-    <section aria-label="Ejercicios de la rutina" class="grid gap-3">
-      <h2 class="text-sm font-medium">Ejercicios</h2>
+    <section :aria-label="t('routines.edit.exercisesSection')" class="grid gap-3">
+      <h2 class="text-sm font-medium">{{ t('routines.edit.exercises') }}</h2>
 
       <p v-if="items.length === 0" class="text-sm text-muted-foreground">
-        Agrega al menos un ejercicio.
+        {{ t('routines.edit.addAtLeastOne') }}
       </p>
 
       <div
@@ -151,8 +153,15 @@ async function save() {
         :data-testid="`routine-item-${i}`"
       >
         <div class="flex items-center gap-1">
-          <p class="flex-1 truncate font-medium">{{ exerciseName(item.exerciseId) }}</p>
-          <Button type="button" variant="ghost" size="icon" :disabled="i === 0" aria-label="Subir" @click="move(i, -1)">
+          <p class="flex-1 truncate font-medium">{{ nameById(item.exerciseId) }}</p>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            :disabled="i === 0"
+            :aria-label="t('routines.edit.moveUp')"
+            @click="move(i, -1)"
+          >
             <ChevronUp class="size-4" />
           </Button>
           <Button
@@ -160,7 +169,7 @@ async function save() {
             variant="ghost"
             size="icon"
             :disabled="i === items.length - 1"
-            aria-label="Bajar"
+            :aria-label="t('routines.edit.moveDown')"
             @click="move(i, 1)"
           >
             <ChevronDown class="size-4" />
@@ -169,7 +178,7 @@ async function save() {
             type="button"
             variant="ghost"
             size="icon"
-            :aria-label="`Quitar ${exerciseName(item.exerciseId)}`"
+            :aria-label="t('routines.edit.remove', { name: nameById(item.exerciseId) })"
             @click="items.splice(i, 1)"
           >
             <Trash2 class="size-4" />
@@ -177,12 +186,26 @@ async function save() {
         </div>
         <div class="mt-2 grid grid-cols-4 gap-2">
           <div class="grid gap-1">
-            <Label :for="`sets-${i}`" class="text-xs">Series</Label>
-            <Input :id="`sets-${i}`" v-model.number="item.targetSets" type="number" inputmode="numeric" min="1" max="50" />
+            <Label :for="`sets-${i}`" class="text-xs">{{ t('routines.edit.sets') }}</Label>
+            <Input
+              :id="`sets-${i}`"
+              v-model.number="item.targetSets"
+              type="number"
+              inputmode="numeric"
+              min="1"
+              max="50"
+            />
           </div>
           <div class="grid gap-1">
-            <Label :for="`reps-${i}`" class="text-xs">Reps</Label>
-            <Input :id="`reps-${i}`" v-model.number="item.targetReps" type="number" inputmode="numeric" min="1" max="500" />
+            <Label :for="`reps-${i}`" class="text-xs">{{ t('routines.edit.reps') }}</Label>
+            <Input
+              :id="`reps-${i}`"
+              v-model.number="item.targetReps"
+              type="number"
+              inputmode="numeric"
+              min="1"
+              max="500"
+            />
           </div>
           <div class="grid gap-1">
             <Label :for="`weight-${i}`" class="text-xs">{{ unit }}</Label>
@@ -192,12 +215,16 @@ async function save() {
               inputmode="decimal"
               min="0"
               step="0.5"
-              :model-value="item.targetWeightKg === null || item.targetWeightKg === undefined ? '' : displayWeight(item.targetWeightKg, unit)"
+              :model-value="
+                item.targetWeightKg === null || item.targetWeightKg === undefined
+                  ? ''
+                  : displayWeight(item.targetWeightKg, unit)
+              "
               @change="setWeight(item, $event)"
             />
           </div>
           <div class="grid gap-1">
-            <Label :for="`rest-${i}`" class="text-xs">Desc. (s)</Label>
+            <Label :for="`rest-${i}`" class="text-xs">{{ t('routines.edit.rest') }}</Label>
             <Input
               :id="`rest-${i}`"
               type="number"
@@ -214,11 +241,11 @@ async function save() {
 
       <Button type="button" variant="outline" @click="pickerOpen = true">
         <Plus class="size-4" />
-        Agregar ejercicio
+        {{ t('workout.addExercise') }}
       </Button>
     </section>
 
-    <Button type="submit" size="lg" :disabled="saving">Guardar rutina</Button>
+    <Button type="submit" size="lg" :disabled="saving">{{ t('routines.edit.submit') }}</Button>
   </form>
 
   <ExercisePickerSheet v-model:open="pickerOpen" @select="addExercise" />

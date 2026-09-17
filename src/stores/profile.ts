@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import type { Profile, ProfileUpdate, Theme } from '@/domain/models'
 import type { ProfileRepository } from '@/domain/repositories'
 import { repositories } from '@/data/repositories'
+import { setLocale } from '@/i18n'
 
 export function applyTheme(theme: Theme) {
   const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false
@@ -20,6 +21,13 @@ export function createProfileStore(repo: ProfileRepository) {
       () => profile.value?.theme ?? 'system',
       (theme) => applyTheme(theme),
       { immediate: true },
+    )
+
+    watch(
+      () => profile.value?.locale,
+      (locale) => {
+        if (locale) setLocale(locale)
+      },
     )
 
     async function load() {

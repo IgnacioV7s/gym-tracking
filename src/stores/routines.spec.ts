@@ -4,6 +4,9 @@ import type { Routine, RoutineInput } from '@/domain/models'
 import type { RoutineRepository } from '@/domain/repositories'
 
 vi.mock('@/data/repositories', () => ({ repositories: {} }))
+vi.mock('@/i18n', () => ({
+  i18n: { global: { t: (k: string) => (k === 'routines.copySuffix' ? '(copia)' : k) } },
+}))
 
 import { createRoutinesStore } from './routines'
 

@@ -101,10 +101,7 @@ export function createSupabaseWorkoutRepository(
     },
 
     async removeExercise(workoutExerciseId) {
-      const { error } = await client
-        .from('workout_exercises')
-        .delete()
-        .eq('id', workoutExerciseId)
+      const { error } = await client.from('workout_exercises').delete().eq('id', workoutExerciseId)
       if (error) throw error
     },
 

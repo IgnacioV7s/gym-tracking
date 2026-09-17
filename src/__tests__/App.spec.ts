@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia } from 'pinia'
 import { createRouter, createMemoryHistory } from 'vue-router'
+import { i18n } from '@/i18n'
 
 vi.mock('@/lib/supabase', () => ({
   supabase: {
@@ -26,7 +27,7 @@ describe('App', () => {
     await router.push('/')
     await router.isReady()
 
-    const wrapper = mount(App, { global: { plugins: [createPinia(), router] } })
+    const wrapper = mount(App, { global: { plugins: [createPinia(), router, i18n] } })
 
     expect(wrapper.find('h1').text()).toBe('Inicio')
     expect(wrapper.find('nav').text()).toContain('Historial')
@@ -42,7 +43,7 @@ describe('App', () => {
     await router.push('/login')
     await router.isReady()
 
-    const wrapper = mount(App, { global: { plugins: [createPinia(), router] } })
+    const wrapper = mount(App, { global: { plugins: [createPinia(), router, i18n] } })
 
     expect(wrapper.find('nav').exists()).toBe(false)
   })

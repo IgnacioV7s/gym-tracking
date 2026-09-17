@@ -6,6 +6,7 @@ export function exerciseFromRow(row: Tables<'exercises'>): Exercise {
     id: row.id,
     userId: row.user_id,
     name: row.name,
+    nameEn: row.name_en,
     primaryMuscle: row.primary_muscle,
     secondaryMuscles: row.secondary_muscles,
     equipment: row.equipment,

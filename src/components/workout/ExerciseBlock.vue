@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { Plus, Trash2 } from '@lucide/vue'
 import type { SetType, WeightUnit, WorkoutExercise, WorkoutSet } from '@/domain/models'
 import { Button } from '@/components/ui/button'
@@ -18,6 +19,8 @@ const emit = defineEmits<{
   toggleSet: [setId: string]
   removeSet: [setId: string]
 }>()
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -27,7 +30,7 @@ const emit = defineEmits<{
       <Button
         variant="ghost"
         size="icon"
-        :aria-label="`Quitar ${name} de la sesión`"
+        :aria-label="t('workout.removeExercise', { name })"
         @click="emit('removeExercise')"
       >
         <Trash2 class="size-4" />
@@ -39,9 +42,9 @@ const emit = defineEmits<{
       aria-hidden="true"
     >
       <span>#</span>
-      <span>Anterior</span>
+      <span>{{ t('workout.columns.previous') }}</span>
       <span class="text-center">{{ unit }}</span>
-      <span class="text-center">Reps</span>
+      <span class="text-center">{{ t('workout.columns.reps') }}</span>
       <span />
       <span />
     </div>
@@ -62,7 +65,7 @@ const emit = defineEmits<{
 
     <Button variant="secondary" class="mt-2 w-full" @click="emit('addSet')">
       <Plus class="size-4" />
-      Agregar serie
+      {{ t('workout.addSet') }}
     </Button>
   </section>
 </template>

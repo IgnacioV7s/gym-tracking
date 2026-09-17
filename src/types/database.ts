@@ -35,6 +35,7 @@ export type Database = {
           equipment: Database['public']['Enums']['equipment']
           id: string
           name: string
+          name_en: string | null
           primary_muscle: Database['public']['Enums']['muscle_group']
           secondary_muscles: Database['public']['Enums']['muscle_group'][]
           updated_at: string
@@ -46,6 +47,7 @@ export type Database = {
           equipment: Database['public']['Enums']['equipment']
           id?: string
           name: string
+          name_en?: string | null
           primary_muscle: Database['public']['Enums']['muscle_group']
           secondary_muscles?: Database['public']['Enums']['muscle_group'][]
           updated_at?: string
@@ -57,6 +59,7 @@ export type Database = {
           equipment?: Database['public']['Enums']['equipment']
           id?: string
           name?: string
+          name_en?: string | null
           primary_muscle?: Database['public']['Enums']['muscle_group']
           secondary_muscles?: Database['public']['Enums']['muscle_group'][]
           updated_at?: string
@@ -70,6 +73,7 @@ export type Database = {
           default_rest_seconds: number
           display_name: string | null
           id: string
+          locale: string
           one_rep_max_formula: string
           theme: string
           updated_at: string
@@ -80,6 +84,7 @@ export type Database = {
           default_rest_seconds?: number
           display_name?: string | null
           id: string
+          locale?: string
           one_rep_max_formula?: string
           theme?: string
           updated_at?: string
@@ -90,6 +95,7 @@ export type Database = {
           default_rest_seconds?: number
           display_name?: string | null
           id?: string
+          locale?: string
           one_rep_max_formula?: string
           theme?: string
           updated_at?: string

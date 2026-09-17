@@ -12,6 +12,7 @@ function exercise(overrides: Partial<Exercise>): Exercise {
     id: 'x',
     userId: null,
     name: 'X',
+    nameEn: null,
     primaryMuscle: 'chest',
     secondaryMuscles: [],
     equipment: 'other',

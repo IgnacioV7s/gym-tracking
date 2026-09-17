@@ -1,0 +1,242 @@
+{
+  "app": {
+    "name": "Gym Tracking"
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "saved": "Guardado",
+    "create": "Crear",
+    "delete": "Eliminar",
+    "edit": "Editar {name}",
+    "back": "Volver",
+    "search": "Buscar",
+    "noResults": "Sin resultados.",
+    "minutes": "{n} min",
+    "errorGeneric": "Algo salió mal",
+    "couldNotSave": "No se pudo guardar",
+    "couldNotDelete": "No se pudo eliminar",
+    "couldNotUpdate": "No se pudo actualizar"
+  },
+  "nav": {
+    "main": "Navegación principal",
+    "home": "Inicio",
+    "history": "Historial",
+    "routines": "Rutinas",
+    "analytics": "Análisis",
+    "settings": "Ajustes",
+    "exercises": "Ejercicios",
+    "shortcuts": "Accesos"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Contraseña",
+    "passwordHint": "Mínimo 6 caracteres.",
+    "name": "Nombre",
+    "login": {
+      "title": "Iniciar sesión",
+      "subtitle": "Entra para ver tus entrenamientos.",
+      "submit": "Entrar",
+      "magicLink": "Enviarme un enlace mágico",
+      "magicLinkSent": "Te enviamos un enlace de acceso",
+      "magicLinkSentHint": "Revisa tu correo.",
+      "magicLinkNeedsEmail": "Escribe tu email primero",
+      "failed": "No se pudo iniciar sesión",
+      "magicLinkFailed": "No se pudo enviar el enlace",
+      "noAccount": "¿No tienes cuenta?",
+      "register": "Regístrate"
+    },
+    "register": {
+      "title": "Crear cuenta",
+      "subtitle": "Empieza a registrar tu progreso.",
+      "submit": "Crear cuenta",
+      "created": "Cuenta creada",
+      "createdHint": "Revisa tu correo para confirmarla.",
+      "failed": "No se pudo crear la cuenta",
+      "hasAccount": "¿Ya tienes cuenta?",
+      "login": "Inicia sesión"
+    }
+  },
+  "home": {
+    "greeting": "Hola",
+    "greetingName": "Hola, {name}",
+    "activeSession": "Sesión en curso",
+    "continueSession": "Continuar sesión",
+    "startFree": "Empezar entrenamiento libre",
+    "startFromRoutine": "Empezar desde una rutina",
+    "couldNotStart": "No se pudo empezar",
+    "freeWorkoutName": "Entrenamiento {weekday}"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "displayName": "Nombre",
+    "weightUnit": "Unidad de peso",
+    "kg": "Kilogramos (kg)",
+    "lb": "Libras (lb)",
+    "theme": "Tema",
+    "themeSystem": "Sistema",
+    "themeLight": "Claro",
+    "themeDark": "Oscuro",
+    "language": "Idioma",
+    "restSeconds": "Descanso por defecto (segundos)",
+    "formula": "Fórmula de 1RM",
+    "signedInAs": "Sesión iniciada como {email}",
+    "signOut": "Cerrar sesión"
+  },
+  "locale": {
+    "es": "Español",
+    "en": "English"
+  },
+  "muscle": {
+    "chest": "Pecho",
+    "back": "Espalda",
+    "shoulders": "Hombros",
+    "biceps": "Bíceps",
+    "triceps": "Tríceps",
+    "forearms": "Antebrazos",
+    "quads": "Cuádriceps",
+    "hamstrings": "Isquios",
+    "glutes": "Glúteos",
+    "calves": "Gemelos",
+    "abs": "Abdomen",
+    "full_body": "Cuerpo completo",
+    "cardio": "Cardio"
+  },
+  "equipment": {
+    "barbell": "Barra",
+    "dumbbell": "Mancuernas",
+    "machine": "Máquina",
+    "cable": "Polea",
+    "bodyweight": "Peso corporal",
+    "kettlebell": "Kettlebell",
+    "other": "Otro"
+  },
+  "setType": {
+    "normal": "Normal",
+    "warmup": "Calentamiento",
+    "drop": "Drop set",
+    "failure": "Al fallo"
+  },
+  "exercises": {
+    "title": "Ejercicios",
+    "new": "Nuevo",
+    "searchPlaceholder": "Buscar ejercicio",
+    "filterMuscle": "Filtrar por músculo",
+    "allMuscles": "Todos los músculos",
+    "filterEquipment": "Filtrar por equipo",
+    "allEquipment": "Todo el equipo",
+    "showArchived": "Mostrar archivados",
+    "empty": "No hay ejercicios que coincidan.",
+    "own": "Propio",
+    "archive": "Archivar {name}",
+    "restore": "Restaurar {name}",
+    "created": "Ejercicio creado",
+    "updated": "Ejercicio actualizado",
+    "form": {
+      "titleNew": "Nuevo ejercicio",
+      "titleEdit": "Editar ejercicio",
+      "subtitle": "Solo tú verás este ejercicio.",
+      "name": "Nombre",
+      "primaryMuscle": "Músculo principal",
+      "equipment": "Equipo",
+      "secondaryMuscles": "Músculos secundarios",
+      "nameRequired": "El nombre es obligatorio",
+      "invalid": "Datos inválidos"
+    },
+    "picker": {
+      "title": "Elegir ejercicio",
+      "subtitle": "Toca uno para agregarlo.",
+      "search": "Buscar ejercicio para agregar"
+    },
+    "fallbackName": "Ejercicio"
+  },
+  "workout": {
+    "saveStatus": "Estado de guardado: {status}",
+    "unsaved": "Sin guardar",
+    "addExercise": "Agregar ejercicio",
+    "addSet": "Agregar serie",
+    "removeExercise": "Quitar {name} de la sesión",
+    "couldNotAdd": "No se pudo agregar",
+    "discard": "Descartar",
+    "finish": "Finalizar",
+    "discarded": "Sesión descartada",
+    "couldNotFinish": "No se pudo finalizar",
+    "couldNotDiscard": "No se pudo descartar",
+    "columns": {
+      "previous": "Anterior",
+      "reps": "Reps"
+    },
+    "set": {
+      "typeLabel": "Serie {n}, tipo {type}. Cambiar tipo",
+      "previous": "Anterior: {value}",
+      "weight": "Peso serie {n} ({unit})",
+      "reps": "Repeticiones serie {n}",
+      "complete": "Completar serie {n}",
+      "uncomplete": "Desmarcar serie {n}",
+      "remove": "Eliminar serie {n}"
+    },
+    "rest": {
+      "label": "Descanso",
+      "add30": "Añadir 30 segundos",
+      "skip": "Saltar descanso"
+    },
+    "finishDialog": {
+      "title": "¿Finalizar sesión?",
+      "description": "Se guardará con la hora actual de término.",
+      "keepGoing": "Seguir entrenando"
+    },
+    "discardDialog": {
+      "title": "¿Descartar sesión?",
+      "description": "Se borrará todo lo registrado en esta sesión."
+    },
+    "summary": {
+      "title": "Sesión completada",
+      "volume": "Volumen",
+      "sets": "Series",
+      "duration": "Duración",
+      "done": "Listo"
+    },
+    "alreadyActive": "Ya tienes una sesión en curso",
+    "alreadyActiveHint": "Termínala o descártala primero."
+  },
+  "routines": {
+    "title": "Rutinas",
+    "new": "Nueva",
+    "empty": "Aún no tienes rutinas.",
+    "createFirst": "Crear la primera",
+    "exerciseCount": "{n} ejercicios",
+    "start": "Empezar",
+    "duplicate": "Duplicar {name}",
+    "duplicated": "Rutina duplicada",
+    "couldNotDuplicate": "No se pudo duplicar",
+    "deleted": "Rutina eliminada",
+    "copySuffix": "(copia)",
+    "deleteDialog": {
+      "title": "¿Eliminar rutina?",
+      "description": "\"{name}\" se eliminará. Las sesiones ya registradas se conservan."
+    },
+    "edit": {
+      "titleNew": "Nueva rutina",
+      "titleEdit": "Editar rutina",
+      "notFound": "Rutina no encontrada",
+      "name": "Nombre",
+      "notes": "Notas",
+      "exercises": "Ejercicios",
+      "exercisesSection": "Ejercicios de la rutina",
+      "addAtLeastOne": "Agrega al menos un ejercicio.",
+      "moveUp": "Subir",
+      "moveDown": "Bajar",
+      "remove": "Quitar {name}",
+      "sets": "Series",
+      "reps": "Reps",
+      "rest": "Desc. (s)",
+      "submit": "Guardar rutina",
+      "saved": "Rutina guardada",
+      "checkData": "Revisa los datos"
+    }
+  },
+  "validation": {
+    "nameRequired": "El nombre es obligatorio",
+    "atLeastOneExercise": "Agrega al menos un ejercicio"
+  }
+}

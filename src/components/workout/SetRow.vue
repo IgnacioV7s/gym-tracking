@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Check, Trash2 } from '@lucide/vue'
 import { SET_TYPES, type SetType, type WeightUnit, type WorkoutSet } from '@/domain/models'
 import { displayWeight, formatWeight, inputToKg } from '@/domain/units/weight'
@@ -18,17 +19,17 @@ const emit = defineEmits<{
   remove: []
 }>()
 
-const TYPE_LABEL: Record<SetType, string> = { normal: '', warmup: 'C', drop: 'D', failure: 'F' }
-const TYPE_TITLE: Record<SetType, string> = {
-  normal: 'Normal',
-  warmup: 'Calentamiento',
-  drop: 'Drop set',
-  failure: 'Al fallo',
-}
+const { t } = useI18n()
+
+const TYPE_LABEL: Record<SetType, string> = { normal: '', warmup: 'W', drop: 'D', failure: 'F' }
+const typeTitle = computed(() => t(`setType.${props.set.type}`))
+const n = computed(() => props.index + 1)
 
 const weightValue = computed(() => displayWeight(props.set.weightKg, props.unit))
 const previousLabel = computed(() =>
-  props.previous ? `${formatWeight(props.previous.weightKg, props.unit)} × ${props.previous.reps}` : '—',
+  props.previous
+    ? `${formatWeight(props.previous.weightKg, props.unit)} × ${props.previous.reps}`
+    : '—',
 )
 
 function cycleType() {
@@ -64,14 +65,17 @@ function onReps(e: Event) {
     <button
       type="button"
       class="min-h-11 rounded-md text-sm font-medium text-muted-foreground"
-      :title="TYPE_TITLE[set.type]"
-      :aria-label="`Serie ${index + 1}, tipo ${TYPE_TITLE[set.type]}. Cambiar tipo`"
+      :title="typeTitle"
+      :aria-label="t('workout.set.typeLabel', { n, type: typeTitle })"
       @click="cycleType"
     >
-      {{ TYPE_LABEL[set.type] || index + 1 }}
+      {{ TYPE_LABEL[set.type] || n }}
     </button>
 
-    <span class="truncate text-xs text-muted-foreground" :title="`Anterior: ${previousLabel}`">
+    <span
+      class="truncate text-xs text-muted-foreground"
+      :title="t('workout.set.previous', { value: previousLabel })"
+    >
       {{ previousLabel }}
     </span>
 
@@ -81,7 +85,7 @@ function onReps(e: Event) {
       min="0"
       step="0.5"
       :value="weightValue"
-      :aria-label="`Peso serie ${index + 1} (${unit})`"
+      :aria-label="t('workout.set.weight', { n, unit })"
       class="h-11 w-full rounded-md border bg-background px-2 text-center text-base tabular-nums focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
       @change="onWeight"
     />
@@ -92,7 +96,7 @@ function onReps(e: Event) {
       min="0"
       step="1"
       :value="set.reps"
-      :aria-label="`Repeticiones serie ${index + 1}`"
+      :aria-label="t('workout.set.reps', { n })"
       class="h-11 w-full rounded-md border bg-background px-2 text-center text-base tabular-nums focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
       @change="onReps"
     />
@@ -108,7 +112,9 @@ function onReps(e: Event) {
         )
       "
       :aria-pressed="set.completed"
-      :aria-label="`${set.completed ? 'Desmarcar' : 'Completar'} serie ${index + 1}`"
+      :aria-label="
+        set.completed ? t('workout.set.uncomplete', { n }) : t('workout.set.complete', { n })
+      "
       @click="emit('toggle')"
     >
       <Check class="size-5" />
@@ -117,7 +123,7 @@ function onReps(e: Event) {
     <button
       type="button"
       class="flex size-10 items-center justify-center rounded-md text-muted-foreground hover:text-destructive"
-      :aria-label="`Eliminar serie ${index + 1}`"
+      :aria-label="t('workout.set.remove', { n })"
       @click="emit('remove')"
     >
       <Trash2 class="size-4" />

@@ -9,7 +9,7 @@ export const routineExerciseInputSchema = z.object({
 })
 
 export const routineInputSchema = z.object({
-  name: z.string().trim().min(1, 'El nombre es obligatorio').max(100),
+  name: z.string().trim().min(1, 'validation.nameRequired').max(100),
   notes: z.string().trim().max(2000).nullable().optional(),
-  exercises: z.array(routineExerciseInputSchema).min(1, 'Agrega al menos un ejercicio'),
+  exercises: z.array(routineExerciseInputSchema).min(1, 'validation.atLeastOneExercise'),
 })

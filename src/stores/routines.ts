@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import type { Routine, RoutineInput } from '@/domain/models'
 import type { RoutineRepository } from '@/domain/repositories'
 import { repositories } from '@/data/repositories'
+import { i18n } from '@/i18n'
 
 export function createRoutinesStore(repo: RoutineRepository) {
   return defineStore('routines', () => {
@@ -51,7 +52,7 @@ export function createRoutinesStore(repo: RoutineRepository) {
       const source = await get(id)
       if (!source) throw new Error('Routine not found')
       return create({
-        name: `${source.name} (copia)`,
+        name: `${source.name} ${i18n.global.t('routines.copySuffix')}`,
         notes: source.notes,
         exercises: source.exercises.map((e) => ({
           exerciseId: e.exerciseId,

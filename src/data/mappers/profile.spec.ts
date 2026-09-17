@@ -10,6 +10,7 @@ describe('profile mappers', () => {
       theme: 'dark',
       default_rest_seconds: 120,
       one_rep_max_formula: 'brzycki',
+      locale: 'en',
       created_at: '2026-01-01T00:00:00Z',
       updated_at: '2026-01-01T00:00:00Z',
     })
@@ -20,6 +21,7 @@ describe('profile mappers', () => {
       theme: 'dark',
       defaultRestSeconds: 120,
       oneRepMaxFormula: 'brzycki',
+      locale: 'en',
     })
   })
 

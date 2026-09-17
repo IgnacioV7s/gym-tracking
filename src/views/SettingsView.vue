@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { toast } from 'vue-sonner'
 import { useAuthStore } from '@/stores/auth'
 import { useProfileStore } from '@/stores/profile'
-import type { ProfileUpdate } from '@/domain/models'
+import { LOCALES, type ProfileUpdate } from '@/domain/models'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -12,19 +13,11 @@ import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 
+const { t } = useI18n()
 const auth = useAuthStore()
 const profileStore = useProfileStore()
 const router = useRouter()
 const signingOut = ref(false)
-
-async function save(changes: ProfileUpdate) {
-  try {
-    await profileStore.update(changes)
-    toast.success('Guardado')
-  } catch (e) {
-    toast.error('No se pudo guardar', { description: e instanceof Error ? e.message : undefined })
-  }
-}
 
 const WEIGHT_UNITS = ['kg', 'lb'] as const
 const THEMES = ['system', 'light', 'dark'] as const
@@ -32,6 +25,17 @@ const FORMULAS = ['epley', 'brzycki'] as const
 
 function oneOf<T extends string>(allowed: readonly T[], value: unknown): T | undefined {
   return allowed.includes(value as T) ? (value as T) : undefined
+}
+
+async function save(changes: ProfileUpdate) {
+  try {
+    await profileStore.update(changes)
+    toast.success(t('common.saved'))
+  } catch (e) {
+    toast.error(t('common.couldNotSave'), {
+      description: e instanceof Error ? e.message : undefined,
+    })
+  }
 }
 
 async function signOut() {
@@ -47,7 +51,7 @@ async function signOut() {
 </script>
 
 <template>
-  <h1 class="text-2xl font-semibold tracking-tight">Ajustes</h1>
+  <h1 class="text-2xl font-semibold tracking-tight">{{ t('settings.title') }}</h1>
 
   <div v-if="!profileStore.profile" class="mt-6 grid gap-4">
     <Skeleton class="h-10 w-full" />
@@ -57,7 +61,7 @@ async function signOut() {
 
   <div v-else class="mt-6 grid gap-6">
     <div class="grid gap-2">
-      <Label for="displayName">Nombre</Label>
+      <Label for="displayName">{{ t('settings.displayName') }}</Label>
       <Input
         id="displayName"
         :model-value="profileStore.profile.displayName ?? ''"
@@ -67,32 +71,45 @@ async function signOut() {
     </div>
 
     <div class="grid gap-2">
-      <Label for="weightUnit">Unidad de peso</Label>
+      <Label for="language">{{ t('settings.language') }}</Label>
+      <NativeSelect
+        id="language"
+        :model-value="profileStore.profile.locale"
+        @update:model-value="save({ locale: oneOf(LOCALES, $event) })"
+      >
+        <NativeSelectOption v-for="l in LOCALES" :key="l" :value="l">{{
+          t(`locale.${l}`)
+        }}</NativeSelectOption>
+      </NativeSelect>
+    </div>
+
+    <div class="grid gap-2">
+      <Label for="weightUnit">{{ t('settings.weightUnit') }}</Label>
       <NativeSelect
         id="weightUnit"
         :model-value="profileStore.profile.weightUnit"
         @update:model-value="save({ weightUnit: oneOf(WEIGHT_UNITS, $event) })"
       >
-        <NativeSelectOption value="kg">Kilogramos (kg)</NativeSelectOption>
-        <NativeSelectOption value="lb">Libras (lb)</NativeSelectOption>
+        <NativeSelectOption value="kg">{{ t('settings.kg') }}</NativeSelectOption>
+        <NativeSelectOption value="lb">{{ t('settings.lb') }}</NativeSelectOption>
       </NativeSelect>
     </div>
 
     <div class="grid gap-2">
-      <Label for="theme">Tema</Label>
+      <Label for="theme">{{ t('settings.theme') }}</Label>
       <NativeSelect
         id="theme"
         :model-value="profileStore.profile.theme"
         @update:model-value="save({ theme: oneOf(THEMES, $event) })"
       >
-        <NativeSelectOption value="system">Sistema</NativeSelectOption>
-        <NativeSelectOption value="light">Claro</NativeSelectOption>
-        <NativeSelectOption value="dark">Oscuro</NativeSelectOption>
+        <NativeSelectOption value="system">{{ t('settings.themeSystem') }}</NativeSelectOption>
+        <NativeSelectOption value="light">{{ t('settings.themeLight') }}</NativeSelectOption>
+        <NativeSelectOption value="dark">{{ t('settings.themeDark') }}</NativeSelectOption>
       </NativeSelect>
     </div>
 
     <div class="grid gap-2">
-      <Label for="rest">Descanso por defecto (segundos)</Label>
+      <Label for="rest">{{ t('settings.restSeconds') }}</Label>
       <Input
         id="rest"
         type="number"
@@ -106,7 +123,7 @@ async function signOut() {
     </div>
 
     <div class="grid gap-2">
-      <Label for="formula">Fórmula de 1RM</Label>
+      <Label for="formula">{{ t('settings.formula') }}</Label>
       <NativeSelect
         id="formula"
         :model-value="profileStore.profile.oneRepMaxFormula"
@@ -120,8 +137,12 @@ async function signOut() {
     <Separator />
 
     <div class="grid gap-2">
-      <p class="text-sm text-muted-foreground">Sesión iniciada como {{ auth.user?.email }}</p>
-      <Button variant="outline" :disabled="signingOut" @click="signOut">Cerrar sesión</Button>
+      <p class="text-sm text-muted-foreground">
+        {{ t('settings.signedInAs', { email: auth.user?.email }) }}
+      </p>
+      <Button variant="outline" :disabled="signingOut" @click="signOut">{{
+        t('settings.signOut')
+      }}</Button>
     </div>
   </div>
 </template>

@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { toast } from 'vue-sonner'
 import { Plus, Check, CloudOff, Cloud, Loader2 } from '@lucide/vue'
 import type { Exercise, SetType, Workout } from '@/domain/models'
 import { formatWeight } from '@/domain/units/weight'
-import { workoutDurationMinutes, workoutVolumeKg, workoutWorkingSets } from '@/domain/analytics/volume'
+import {
+  workoutDurationMinutes,
+  workoutVolumeKg,
+  workoutWorkingSets,
+} from '@/domain/analytics/volume'
 import { useActiveWorkoutStore } from '@/stores/activeWorkout'
 import { useExercisesStore } from '@/stores/exercises'
+import { useExerciseName } from '@/composables/useExerciseName'
 import { useProfileStore } from '@/stores/profile'
 import { useTimer } from '@/composables/useTimer'
 import { Button } from '@/components/ui/button'
@@ -24,6 +30,8 @@ import ExerciseBlock from '@/components/workout/ExerciseBlock.vue'
 import RestTimer from '@/components/workout/RestTimer.vue'
 import ExercisePickerSheet from '@/components/exercise/ExercisePickerSheet.vue'
 
+const { t } = useI18n()
+const { nameById } = useExerciseName()
 const router = useRouter()
 const active = useActiveWorkoutStore()
 const exercises = useExercisesStore()
@@ -52,14 +60,14 @@ watch(
   { immediate: true },
 )
 
-function exerciseName(id: string) {
-  return exercises.byId.get(id)?.name ?? 'Ejercicio'
-}
-
 function onPick(exercise: Exercise) {
-  void active.addExercise(exercise.id).catch((e) =>
-    toast.error('No se pudo agregar', { description: e instanceof Error ? e.message : undefined }),
-  )
+  void active
+    .addExercise(exercise.id)
+    .catch((e) =>
+      toast.error(t('workout.couldNotAdd'), {
+        description: e instanceof Error ? e.message : undefined,
+      }),
+    )
 }
 
 function onUpdateSet(setId: string, changes: { reps?: number; weightKg?: number; type?: SetType }) {
@@ -78,7 +86,9 @@ async function finish() {
     confirmFinishOpen.value = false
     timer.stop()
   } catch (e) {
-    toast.error('No se pudo finalizar', { description: e instanceof Error ? e.message : undefined })
+    toast.error(t('workout.couldNotFinish'), {
+      description: e instanceof Error ? e.message : undefined,
+    })
   } finally {
     busy.value = false
   }
@@ -90,9 +100,11 @@ async function discard() {
     await active.discard()
     confirmDiscardOpen.value = false
     timer.stop()
-    toast('Sesión descartada')
+    toast(t('workout.discarded'))
   } catch (e) {
-    toast.error('No se pudo descartar', { description: e instanceof Error ? e.message : undefined })
+    toast.error(t('workout.couldNotDiscard'), {
+      description: e instanceof Error ? e.message : undefined,
+    })
   } finally {
     busy.value = false
   }
@@ -107,16 +119,20 @@ function closeSummary() {
 <template>
   <template v-if="active.workout">
     <header class="flex items-center gap-2">
-      <h1 class="flex-1 truncate text-2xl font-semibold tracking-tight">{{ active.workout.name }}</h1>
+      <h1 class="flex-1 truncate text-2xl font-semibold tracking-tight">
+        {{ active.workout.name }}
+      </h1>
       <span
         class="flex items-center gap-1 text-xs text-muted-foreground"
         role="status"
-        :aria-label="`Estado de guardado: ${active.saveStatus}`"
+        :aria-label="t('workout.saveStatus', { status: active.saveStatus })"
       >
         <Loader2 v-if="active.saveStatus === 'saving'" class="size-4 animate-spin" />
         <CloudOff v-else-if="active.saveStatus === 'error'" class="size-4 text-destructive" />
         <Cloud v-else class="size-4" />
-        <span v-if="active.saveStatus === 'error'" class="text-destructive">Sin guardar</span>
+        <span v-if="active.saveStatus === 'error'" class="text-destructive">{{
+          t('workout.unsaved')
+        }}</span>
       </span>
     </header>
 
@@ -125,7 +141,7 @@ function closeSummary() {
         v-for="exercise in active.workout.exercises"
         :key="exercise.id"
         :exercise="exercise"
-        :name="exerciseName(exercise.exerciseId)"
+        :name="nameById(exercise.exerciseId)"
         :unit="unit"
         :previous-set="(i) => active.previousSet(exercise.exerciseId, i)"
         @add-set="active.addSet(exercise.id)"
@@ -137,16 +153,16 @@ function closeSummary() {
 
       <Button variant="outline" class="w-full" @click="pickerOpen = true">
         <Plus class="size-4" />
-        Agregar ejercicio
+        {{ t('workout.addExercise') }}
       </Button>
 
       <div class="mt-4 grid grid-cols-2 gap-2">
         <Button variant="ghost" class="text-destructive" @click="confirmDiscardOpen = true">
-          Descartar
+          {{ t('workout.discard') }}
         </Button>
         <Button @click="confirmFinishOpen = true">
           <Check class="size-4" />
-          Finalizar
+          {{ t('workout.finish') }}
         </Button>
       </div>
     </div>
@@ -162,12 +178,14 @@ function closeSummary() {
     <Dialog v-model:open="confirmFinishOpen">
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>¿Finalizar sesión?</DialogTitle>
-          <DialogDescription>Se guardará con la hora actual de término.</DialogDescription>
+          <DialogTitle>{{ t('workout.finishDialog.title') }}</DialogTitle>
+          <DialogDescription>{{ t('workout.finishDialog.description') }}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" @click="confirmFinishOpen = false">Seguir entrenando</Button>
-          <Button :disabled="busy" @click="finish">Finalizar</Button>
+          <Button variant="outline" @click="confirmFinishOpen = false">{{
+            t('workout.finishDialog.keepGoing')
+          }}</Button>
+          <Button :disabled="busy" @click="finish">{{ t('workout.finish') }}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -175,12 +193,16 @@ function closeSummary() {
     <Dialog v-model:open="confirmDiscardOpen">
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>¿Descartar sesión?</DialogTitle>
-          <DialogDescription>Se borrará todo lo registrado en esta sesión.</DialogDescription>
+          <DialogTitle>{{ t('workout.discardDialog.title') }}</DialogTitle>
+          <DialogDescription>{{ t('workout.discardDialog.description') }}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" @click="confirmDiscardOpen = false">Cancelar</Button>
-          <Button variant="destructive" :disabled="busy" @click="discard">Descartar</Button>
+          <Button variant="outline" @click="confirmDiscardOpen = false">{{
+            t('common.cancel')
+          }}</Button>
+          <Button variant="destructive" :disabled="busy" @click="discard">{{
+            t('workout.discard')
+          }}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -194,25 +216,27 @@ function closeSummary() {
   <Dialog :open="finished !== null" @update:open="(v) => !v && closeSummary()">
     <DialogContent v-if="finished">
       <DialogHeader>
-        <DialogTitle>Sesión completada</DialogTitle>
+        <DialogTitle>{{ t('workout.summary.title') }}</DialogTitle>
         <DialogDescription>{{ finished.name }}</DialogDescription>
       </DialogHeader>
       <dl class="grid grid-cols-3 gap-3 text-center">
         <div>
-          <dt class="text-xs text-muted-foreground">Volumen</dt>
+          <dt class="text-xs text-muted-foreground">{{ t('workout.summary.volume') }}</dt>
           <dd class="text-lg font-semibold">{{ formatWeight(workoutVolumeKg(finished), unit) }}</dd>
         </div>
         <div>
-          <dt class="text-xs text-muted-foreground">Series</dt>
+          <dt class="text-xs text-muted-foreground">{{ t('workout.summary.sets') }}</dt>
           <dd class="text-lg font-semibold">{{ workoutWorkingSets(finished) }}</dd>
         </div>
         <div>
-          <dt class="text-xs text-muted-foreground">Duración</dt>
-          <dd class="text-lg font-semibold">{{ workoutDurationMinutes(finished) }} min</dd>
+          <dt class="text-xs text-muted-foreground">{{ t('workout.summary.duration') }}</dt>
+          <dd class="text-lg font-semibold">
+            {{ t('common.minutes', { n: workoutDurationMinutes(finished) }) }}
+          </dd>
         </div>
       </dl>
       <DialogFooter>
-        <Button @click="closeSummary">Listo</Button>
+        <Button @click="closeSummary">{{ t('workout.summary.done') }}</Button>
       </DialogFooter>
     </DialogContent>
   </Dialog>

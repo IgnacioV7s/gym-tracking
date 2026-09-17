@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { toast } from 'vue-sonner'
 import {
   EQUIPMENT,
-  EQUIPMENT_LABELS,
   MUSCLE_GROUPS,
-  MUSCLE_GROUP_LABELS,
   type Exercise,
   type ExerciseInput,
   type MuscleGroup,
@@ -36,12 +35,13 @@ const emit = defineEmits<{
   submit: [input: ExerciseInput, id: string | null]
 }>()
 
+const { t } = useI18n()
+
 const name = ref('')
 const primaryMuscle = ref<MuscleGroup>('chest')
 const secondaryMuscles = ref<MuscleGroup[]>([])
 const equipment = ref<ExerciseInput['equipment']>('barbell')
 const submitting = ref(false)
-const errorMessage = ref<string | null>(null)
 
 watch(
   () => props.open,
@@ -51,7 +51,6 @@ watch(
     primaryMuscle.value = props.exercise?.primaryMuscle ?? 'chest'
     secondaryMuscles.value = [...(props.exercise?.secondaryMuscles ?? [])]
     equipment.value = props.exercise?.equipment ?? 'barbell'
-    errorMessage.value = null
   },
 )
 
@@ -69,8 +68,7 @@ function submit() {
     equipment: equipment.value,
   })
   if (!parsed.success) {
-    errorMessage.value = parsed.error.issues[0]?.message ?? 'Datos inválidos'
-    toast.error(errorMessage.value)
+    toast.error(t(parsed.error.issues[0]?.message ?? 'exercises.form.invalid'))
     return
   }
   submitting.value = true
@@ -83,36 +81,38 @@ function submit() {
   <Sheet :open="open" @update:open="emit('update:open', $event)">
     <SheetContent side="bottom" class="max-h-[90dvh] overflow-y-auto">
       <SheetHeader>
-        <SheetTitle>{{ exercise ? 'Editar ejercicio' : 'Nuevo ejercicio' }}</SheetTitle>
-        <SheetDescription>Solo tú verás este ejercicio.</SheetDescription>
+        <SheetTitle>{{
+          exercise ? t('exercises.form.titleEdit') : t('exercises.form.titleNew')
+        }}</SheetTitle>
+        <SheetDescription>{{ t('exercises.form.subtitle') }}</SheetDescription>
       </SheetHeader>
 
       <form id="exercise-form" class="grid gap-4 px-4" @submit.prevent="submit">
         <div class="grid gap-2">
-          <Label for="exercise-name">Nombre</Label>
+          <Label for="exercise-name">{{ t('exercises.form.name') }}</Label>
           <Input id="exercise-name" v-model="name" required maxlength="100" autocomplete="off" />
         </div>
 
         <div class="grid gap-2">
-          <Label for="exercise-primary">Músculo principal</Label>
+          <Label for="exercise-primary">{{ t('exercises.form.primaryMuscle') }}</Label>
           <NativeSelect id="exercise-primary" v-model="primaryMuscle">
             <NativeSelectOption v-for="m in MUSCLE_GROUPS" :key="m" :value="m">
-              {{ MUSCLE_GROUP_LABELS[m] }}
+              {{ t(`muscle.${m}`) }}
             </NativeSelectOption>
           </NativeSelect>
         </div>
 
         <div class="grid gap-2">
-          <Label for="exercise-equipment">Equipo</Label>
+          <Label for="exercise-equipment">{{ t('exercises.form.equipment') }}</Label>
           <NativeSelect id="exercise-equipment" v-model="equipment">
             <NativeSelectOption v-for="e in EQUIPMENT" :key="e" :value="e">
-              {{ EQUIPMENT_LABELS[e] }}
+              {{ t(`equipment.${e}`) }}
             </NativeSelectOption>
           </NativeSelect>
         </div>
 
         <fieldset class="grid gap-2">
-          <legend class="text-sm font-medium">Músculos secundarios</legend>
+          <legend class="text-sm font-medium">{{ t('exercises.form.secondaryMuscles') }}</legend>
           <div class="flex flex-wrap gap-2">
             <button
               v-for="m in MUSCLE_GROUPS.filter((g) => g !== primaryMuscle)"
@@ -122,8 +122,11 @@ function submit() {
               :aria-pressed="secondaryMuscles.includes(m)"
               @click="toggleSecondary(m)"
             >
-              <Badge :variant="secondaryMuscles.includes(m) ? 'default' : 'outline'" class="px-3 py-1.5">
-                {{ MUSCLE_GROUP_LABELS[m] }}
+              <Badge
+                :variant="secondaryMuscles.includes(m) ? 'default' : 'outline'"
+                class="px-3 py-1.5"
+              >
+                {{ t(`muscle.${m}`) }}
               </Badge>
             </button>
           </div>
@@ -132,7 +135,7 @@ function submit() {
 
       <SheetFooter>
         <Button type="submit" form="exercise-form" :disabled="submitting">
-          {{ exercise ? 'Guardar' : 'Crear' }}
+          {{ exercise ? t('common.save') : t('common.create') }}
         </Button>
       </SheetFooter>
     </SheetContent>

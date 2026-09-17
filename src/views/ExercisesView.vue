@@ -1,17 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { toast } from 'vue-sonner'
 import { Plus, Search, Pencil, Archive, ArchiveRestore, ChevronLeft } from '@lucide/vue'
-import {
-  EQUIPMENT,
-  EQUIPMENT_LABELS,
-  MUSCLE_GROUPS,
-  MUSCLE_GROUP_LABELS,
-  type Exercise,
-  type ExerciseInput,
-} from '@/domain/models'
+import { EQUIPMENT, MUSCLE_GROUPS, type Exercise, type ExerciseInput } from '@/domain/models'
 import { useExercisesStore } from '@/stores/exercises'
+import { useExerciseName } from '@/composables/useExerciseName'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -21,6 +16,8 @@ import { Label } from '@/components/ui/label'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import ExerciseFormSheet from '@/components/exercise/ExerciseFormSheet.vue'
 
+const { t } = useI18n()
+const { nameOf } = useExerciseName()
 const store = useExercisesStore()
 
 const query = ref('')
@@ -41,12 +38,15 @@ function normalize(s: string) {
 
 const filtered = computed(() => {
   const q = normalize(query.value.trim())
-  return store.items.filter((e) => {
-    if (!showArchived.value && e.archivedAt) return false
-    if (muscle.value && e.primaryMuscle !== muscle.value) return false
-    if (equipment.value && e.equipment !== equipment.value) return false
-    return !q || normalize(e.name).includes(q)
-  })
+  return store.items
+    .map((e) => ({ exercise: e, label: nameOf(e) }))
+    .filter(({ exercise: e, label }) => {
+      if (!showArchived.value && e.archivedAt) return false
+      if (muscle.value && e.primaryMuscle !== muscle.value) return false
+      if (equipment.value && e.equipment !== equipment.value) return false
+      return !q || normalize(label).includes(q)
+    })
+    .sort((a, b) => a.label.localeCompare(b.label))
 })
 
 function openCreate() {
@@ -64,9 +64,11 @@ async function onSubmit(input: ExerciseInput, id: string | null) {
     if (id) await store.update(id, input)
     else await store.create(input)
     sheetOpen.value = false
-    toast.success(id ? 'Ejercicio actualizado' : 'Ejercicio creado')
+    toast.success(id ? t('exercises.updated') : t('exercises.created'))
   } catch (e) {
-    toast.error('No se pudo guardar', { description: e instanceof Error ? e.message : undefined })
+    toast.error(t('common.couldNotSave'), {
+      description: e instanceof Error ? e.message : undefined,
+    })
   }
 }
 
@@ -75,7 +77,9 @@ async function toggleArchive(exercise: Exercise) {
     if (exercise.archivedAt) await store.unarchive(exercise.id)
     else await store.archive(exercise.id)
   } catch (e) {
-    toast.error('No se pudo actualizar', { description: e instanceof Error ? e.message : undefined })
+    toast.error(t('common.couldNotUpdate'), {
+      description: e instanceof Error ? e.message : undefined,
+    })
   }
 }
 </script>
@@ -83,14 +87,14 @@ async function toggleArchive(exercise: Exercise) {
 <template>
   <header class="flex items-center gap-2">
     <Button variant="ghost" size="icon" as-child>
-      <RouterLink :to="{ name: 'home' }" aria-label="Volver">
+      <RouterLink :to="{ name: 'home' }" :aria-label="t('common.back')">
         <ChevronLeft class="size-5" />
       </RouterLink>
     </Button>
-    <h1 class="flex-1 text-2xl font-semibold tracking-tight">Ejercicios</h1>
+    <h1 class="flex-1 text-2xl font-semibold tracking-tight">{{ t('exercises.title') }}</h1>
     <Button size="sm" @click="openCreate">
       <Plus class="size-4" />
-      Nuevo
+      {{ t('exercises.new') }}
     </Button>
   </header>
 
@@ -103,28 +107,30 @@ async function toggleArchive(exercise: Exercise) {
       <Input
         v-model="query"
         type="search"
-        placeholder="Buscar ejercicio"
-        aria-label="Buscar ejercicio"
+        :placeholder="t('exercises.searchPlaceholder')"
+        :aria-label="t('exercises.searchPlaceholder')"
         class="pl-9"
       />
     </div>
     <div class="grid grid-cols-2 gap-2">
-      <NativeSelect v-model="muscle" aria-label="Filtrar por músculo">
-        <NativeSelectOption value="">Todos los músculos</NativeSelectOption>
+      <NativeSelect v-model="muscle" :aria-label="t('exercises.filterMuscle')">
+        <NativeSelectOption value="">{{ t('exercises.allMuscles') }}</NativeSelectOption>
         <NativeSelectOption v-for="m in MUSCLE_GROUPS" :key="m" :value="m">
-          {{ MUSCLE_GROUP_LABELS[m] }}
+          {{ t(`muscle.${m}`) }}
         </NativeSelectOption>
       </NativeSelect>
-      <NativeSelect v-model="equipment" aria-label="Filtrar por equipo">
-        <NativeSelectOption value="">Todo el equipo</NativeSelectOption>
+      <NativeSelect v-model="equipment" :aria-label="t('exercises.filterEquipment')">
+        <NativeSelectOption value="">{{ t('exercises.allEquipment') }}</NativeSelectOption>
         <NativeSelectOption v-for="e in EQUIPMENT" :key="e" :value="e">
-          {{ EQUIPMENT_LABELS[e] }}
+          {{ t(`equipment.${e}`) }}
         </NativeSelectOption>
       </NativeSelect>
     </div>
     <div class="flex items-center gap-2">
       <Switch id="show-archived" v-model="showArchived" />
-      <Label for="show-archived" class="font-normal text-muted-foreground">Mostrar archivados</Label>
+      <Label for="show-archived" class="font-normal text-muted-foreground">{{
+        t('exercises.showArchived')
+      }}</Label>
     </div>
   </div>
 
@@ -132,36 +138,43 @@ async function toggleArchive(exercise: Exercise) {
     <Skeleton v-for="i in 6" :key="i" class="h-16 w-full" />
   </div>
 
-  <p v-else-if="store.error" class="mt-6 text-center text-sm text-destructive">
-    {{ store.error }}
-  </p>
+  <p v-else-if="store.error" class="mt-6 text-center text-sm text-destructive">{{ store.error }}</p>
 
   <p v-else-if="filtered.length === 0" class="mt-10 text-center text-sm text-muted-foreground">
-    No hay ejercicios que coincidan.
+    {{ t('exercises.empty') }}
   </p>
 
   <ul v-else class="mt-4 divide-y rounded-lg border">
     <li
-      v-for="exercise in filtered"
+      v-for="{ exercise, label } in filtered"
       :key="exercise.id"
       class="flex items-center gap-3 px-3 py-2"
       :class="{ 'opacity-60': exercise.archivedAt }"
     >
       <div class="min-w-0 flex-1">
-        <p class="truncate font-medium">{{ exercise.name }}</p>
+        <p class="truncate font-medium">{{ label }}</p>
         <p class="text-xs text-muted-foreground">
-          {{ MUSCLE_GROUP_LABELS[exercise.primaryMuscle] }} · {{ EQUIPMENT_LABELS[exercise.equipment] }}
+          {{ t(`muscle.${exercise.primaryMuscle}`) }} · {{ t(`equipment.${exercise.equipment}`) }}
         </p>
       </div>
-      <Badge v-if="exercise.userId" variant="secondary">Propio</Badge>
+      <Badge v-if="exercise.userId" variant="secondary">{{ t('exercises.own') }}</Badge>
       <template v-if="exercise.userId">
-        <Button variant="ghost" size="icon" :aria-label="`Editar ${exercise.name}`" @click="openEdit(exercise)">
+        <Button
+          variant="ghost"
+          size="icon"
+          :aria-label="t('common.edit', { name: label })"
+          @click="openEdit(exercise)"
+        >
           <Pencil class="size-4" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
-          :aria-label="`${exercise.archivedAt ? 'Restaurar' : 'Archivar'} ${exercise.name}`"
+          :aria-label="
+            exercise.archivedAt
+              ? t('exercises.restore', { name: label })
+              : t('exercises.archive', { name: label })
+          "
           @click="toggleArchive(exercise)"
         >
           <ArchiveRestore v-if="exercise.archivedAt" class="size-4" />

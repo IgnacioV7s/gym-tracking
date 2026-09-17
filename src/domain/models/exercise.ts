@@ -31,6 +31,8 @@ export interface Exercise {
   /** null = global catalog entry, otherwise the owner's user id. */
   userId: string | null
   name: string
+  /** English name; only set on global catalog entries. */
+  nameEn: string | null
   primaryMuscle: MuscleGroup
   secondaryMuscles: MuscleGroup[]
   equipment: Equipment
@@ -45,28 +47,7 @@ export interface ExerciseInput {
   equipment: Equipment
 }
 
-export const MUSCLE_GROUP_LABELS: Record<MuscleGroup, string> = {
-  chest: 'Pecho',
-  back: 'Espalda',
-  shoulders: 'Hombros',
-  biceps: 'Bíceps',
-  triceps: 'Tríceps',
-  forearms: 'Antebrazos',
-  quads: 'Cuádriceps',
-  hamstrings: 'Isquios',
-  glutes: 'Glúteos',
-  calves: 'Gemelos',
-  abs: 'Abdomen',
-  full_body: 'Cuerpo completo',
-  cardio: 'Cardio',
-}
-
-export const EQUIPMENT_LABELS: Record<Equipment, string> = {
-  barbell: 'Barra',
-  dumbbell: 'Mancuernas',
-  machine: 'Máquina',
-  cable: 'Polea',
-  bodyweight: 'Peso corporal',
-  kettlebell: 'Kettlebell',
-  other: 'Otro',
+/** Display name for the current locale; custom exercises have a single name. */
+export function exerciseName(exercise: Pick<Exercise, 'name' | 'nameEn'>, locale: string): string {
+  return locale === 'en' && exercise.nameEn ? exercise.nameEn : exercise.name
 }

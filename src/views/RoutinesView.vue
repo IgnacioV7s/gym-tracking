@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { toast } from 'vue-sonner'
 import { Plus, Play, Pencil, Copy, Trash2 } from '@lucide/vue'
 import type { Routine } from '@/domain/models'
 import { useRoutinesStore } from '@/stores/routines'
 import { useExercisesStore } from '@/stores/exercises'
+import { useExerciseName } from '@/composables/useExerciseName'
 import { useActiveWorkoutStore } from '@/stores/activeWorkout'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -19,6 +21,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 
+const { t } = useI18n()
+const { nameById } = useExerciseName()
 const router = useRouter()
 const routines = useRoutinesStore()
 const exercises = useExercisesStore()
@@ -31,14 +35,14 @@ onMounted(() => Promise.all([routines.load(), exercises.load(), active.load()]))
 
 function describe(routine: Routine) {
   return routine.exercises
-    .map((e) => exercises.byId.get(e.exerciseId)?.name ?? '…')
+    .map((e) => nameById(e.exerciseId))
     .slice(0, 4)
     .join(' · ')
 }
 
 async function start(routine: Routine) {
   if (active.isActive) {
-    toast.error('Ya tienes una sesión en curso', { description: 'Termínala o descártala primero.' })
+    toast.error(t('workout.alreadyActive'), { description: t('workout.alreadyActiveHint') })
     return
   }
   busy.value = true
@@ -46,7 +50,9 @@ async function start(routine: Routine) {
     await active.startFromRoutine(routine)
     await router.push({ name: 'workout' })
   } catch (e) {
-    toast.error('No se pudo empezar', { description: e instanceof Error ? e.message : undefined })
+    toast.error(t('home.couldNotStart'), {
+      description: e instanceof Error ? e.message : undefined,
+    })
   } finally {
     busy.value = false
   }
@@ -55,9 +61,11 @@ async function start(routine: Routine) {
 async function duplicate(routine: Routine) {
   try {
     await routines.duplicate(routine.id)
-    toast.success('Rutina duplicada')
+    toast.success(t('routines.duplicated'))
   } catch (e) {
-    toast.error('No se pudo duplicar', { description: e instanceof Error ? e.message : undefined })
+    toast.error(t('routines.couldNotDuplicate'), {
+      description: e instanceof Error ? e.message : undefined,
+    })
   }
 }
 
@@ -66,10 +74,12 @@ async function confirmDelete() {
   busy.value = true
   try {
     await routines.remove(toDelete.value.id)
-    toast.success('Rutina eliminada')
+    toast.success(t('routines.deleted'))
     toDelete.value = null
   } catch (e) {
-    toast.error('No se pudo eliminar', { description: e instanceof Error ? e.message : undefined })
+    toast.error(t('common.couldNotDelete'), {
+      description: e instanceof Error ? e.message : undefined,
+    })
   } finally {
     busy.value = false
   }
@@ -78,11 +88,11 @@ async function confirmDelete() {
 
 <template>
   <header class="flex items-center gap-2">
-    <h1 class="flex-1 text-2xl font-semibold tracking-tight">Rutinas</h1>
+    <h1 class="flex-1 text-2xl font-semibold tracking-tight">{{ t('routines.title') }}</h1>
     <Button size="sm" as-child>
       <RouterLink :to="{ name: 'routine-new' }">
         <Plus class="size-4" />
-        Nueva
+        {{ t('routines.new') }}
       </RouterLink>
     </Button>
   </header>
@@ -91,12 +101,14 @@ async function confirmDelete() {
     <Skeleton v-for="i in 3" :key="i" class="h-28 w-full" />
   </div>
 
-  <p v-else-if="routines.error" class="mt-6 text-center text-sm text-destructive">{{ routines.error }}</p>
+  <p v-else-if="routines.error" class="mt-6 text-center text-sm text-destructive">
+    {{ routines.error }}
+  </p>
 
   <div v-else-if="routines.items.length === 0" class="mt-12 text-center">
-    <p class="text-muted-foreground">Aún no tienes rutinas.</p>
+    <p class="text-muted-foreground">{{ t('routines.empty') }}</p>
     <Button class="mt-4" as-child>
-      <RouterLink :to="{ name: 'routine-new' }">Crear la primera</RouterLink>
+      <RouterLink :to="{ name: 'routine-new' }">{{ t('routines.createFirst') }}</RouterLink>
     </Button>
   </div>
 
@@ -105,23 +117,39 @@ async function confirmDelete() {
       <CardHeader>
         <CardTitle>{{ routine.name }}</CardTitle>
         <CardDescription>
-          {{ routine.exercises.length }} ejercicios · {{ describe(routine) }}
+          {{ t('routines.exerciseCount', { n: routine.exercises.length }) }} ·
+          {{ describe(routine) }}
         </CardDescription>
       </CardHeader>
       <CardContent class="flex items-center gap-1">
         <Button class="flex-1" :disabled="busy" @click="start(routine)">
           <Play class="size-4" />
-          Empezar
+          {{ t('routines.start') }}
         </Button>
-        <Button variant="ghost" size="icon" :aria-label="`Editar ${routine.name}`" as-child>
+        <Button
+          variant="ghost"
+          size="icon"
+          :aria-label="t('common.edit', { name: routine.name })"
+          as-child
+        >
           <RouterLink :to="{ name: 'routine-edit', params: { id: routine.id } }">
             <Pencil class="size-4" />
           </RouterLink>
         </Button>
-        <Button variant="ghost" size="icon" :aria-label="`Duplicar ${routine.name}`" @click="duplicate(routine)">
+        <Button
+          variant="ghost"
+          size="icon"
+          :aria-label="t('routines.duplicate', { name: routine.name })"
+          @click="duplicate(routine)"
+        >
           <Copy class="size-4" />
         </Button>
-        <Button variant="ghost" size="icon" :aria-label="`Eliminar ${routine.name}`" @click="toDelete = routine">
+        <Button
+          variant="ghost"
+          size="icon"
+          :aria-label="t('common.delete') + ' ' + routine.name"
+          @click="toDelete = routine"
+        >
           <Trash2 class="size-4" />
         </Button>
       </CardContent>
@@ -131,14 +159,16 @@ async function confirmDelete() {
   <Dialog :open="toDelete !== null" @update:open="(v) => !v && (toDelete = null)">
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>¿Eliminar rutina?</DialogTitle>
+        <DialogTitle>{{ t('routines.deleteDialog.title') }}</DialogTitle>
         <DialogDescription>
-          "{{ toDelete?.name }}" se eliminará. Las sesiones ya registradas se conservan.
+          {{ t('routines.deleteDialog.description', { name: toDelete?.name ?? '' }) }}
         </DialogDescription>
       </DialogHeader>
       <DialogFooter>
-        <Button variant="outline" @click="toDelete = null">Cancelar</Button>
-        <Button variant="destructive" :disabled="busy" @click="confirmDelete">Eliminar</Button>
+        <Button variant="outline" @click="toDelete = null">{{ t('common.cancel') }}</Button>
+        <Button variant="destructive" :disabled="busy" @click="confirmDelete">{{
+          t('common.delete')
+        }}</Button>
       </DialogFooter>
     </DialogContent>
   </Dialog>

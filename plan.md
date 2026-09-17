@@ -446,20 +446,27 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 - [x] E2E: crear rutina y empezar sesión desde ella.
 
 ### Fase 7 — i18n (español / inglés)
-- [ ] Migración: columna `profiles.locale text not null default 'es' check (locale in ('es','en'))`; regenerar tipos.
-- [ ] `vue-i18n` configurado (`legacy: false`), `es.json` + `en.json`, fallback a `es`. Idioma inicial: perfil → `navigator.language` → `es`.
-- [ ] Extraer **todos** los strings existentes (vistas, componentes, toasts, aria-labels, labels de enums en `domain/models`) a claves. Los labels de enums (`MUSCLE_GROUP_LABELS`, `EQUIPMENT_LABELS`) pasan a claves `muscle.<key>` / `equipment.<key>`; el dominio deja de contener texto de UI.
-- [ ] Selector de idioma en Ajustes (persistido en perfil). `<html lang>` y `date-fns` locale siguen al idioma.
-- [ ] Catálogo global de ejercicios: columna `name_en` en `exercises` (migración) y el mapper elige según locale; los ejercicios propios del usuario no se traducen.
-- [ ] Test unitario que verifica que `es.json` y `en.json` tienen exactamente las mismas claves.
-- [ ] E2E existentes adaptados (usan `es`, que es el default).
+- [x] Migración: columna `profiles.locale text not null default 'es' check (locale in ('es','en'))`; regenerar tipos.
+- [x] `vue-i18n` configurado (`legacy: false`), `es.json` + `en.json`, fallback a `es`. Idioma inicial: perfil → `navigator.language` → `es`.
+- [x] Extraer **todos** los strings existentes (vistas, componentes, toasts, aria-labels, labels de enums en `domain/models`) a claves. Los labels de enums (`MUSCLE_GROUP_LABELS`, `EQUIPMENT_LABELS`) pasan a claves `muscle.<key>` / `equipment.<key>`; el dominio deja de contener texto de UI.
+- [x] Selector de idioma en Ajustes (persistido en perfil). `<html lang>` y `date-fns` locale siguen al idioma.
+- [x] Catálogo global de ejercicios: columna `name_en` en `exercises` (migración) y el mapper elige según locale; los ejercicios propios del usuario no se traducen.
+- [x] Test unitario que verifica que `es.json` y `en.json` tienen exactamente las mismas claves.
+- [x] E2E existentes adaptados (Playwright con `locale: 'es-ES'`) + `e2e/i18n.spec.ts` que cambia a inglés y verifica UI y catálogo.
 
 ### Fase 8 — Historial y análisis
 - [ ] Store `workouts` (rango de fechas, paginación). `HistoryView`, `WorkoutDetailView`, calendario.
 - [ ] `domain/analytics/*` con tests exhaustivos (sin datos, un dato, warmups excluidos, reps ≥ 37 en Brzycki).
 - [ ] `usePeriod` + componentes de gráfico. `AnalyticsView`. `ExerciseDetailView`.
 
-### Fase 9 — PWA, backup y pulido
+### Fase 9 — Onboarding
+- [ ] Migración: `profiles.onboarded_at timestamptz null`; regenerar tipos.
+- [ ] `OnboardingDialog` (shadcn Dialog, 3–4 pasos con indicador y "Siguiente/Omitir"): 1) crea o usa ejercicios, 2) arma una rutina o empieza libre, 3) registra series y completa para el descanso, 4) revisa historial y análisis. Textos vía i18n.
+- [ ] Se muestra en Inicio la primera vez que hay sesión y `onboardedAt` es null; al cerrar (o al terminar) se guarda `onboardedAt = now()`.
+- [ ] Reabrible desde Ajustes ("Ver tutorial").
+- [ ] Test de store/componente + E2E: aparece al registrarse, no vuelve a aparecer tras recargar.
+
+### Fase 10 — PWA, backup y pulido
 - [ ] `vite-plugin-pwa` (shell cacheado; datos siempre desde red).
 - [ ] Export / import JSON.
 - [ ] Revisión de accesibilidad, estados vacíos, errores de red.

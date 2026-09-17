@@ -15,7 +15,9 @@ export function installAuthGuard(router: Router) {
 
     if (to.meta.public) {
       // Signed-in users skip the auth pages.
-      return auth.isAuthenticated && to.name?.toString().startsWith('auth-') ? { name: 'home' } : true
+      return auth.isAuthenticated && to.name?.toString().startsWith('auth-')
+        ? { name: 'home' }
+        : true
     }
     if (!auth.isAuthenticated) {
       return { name: 'auth-login', query: { redirect: to.fullPath } }

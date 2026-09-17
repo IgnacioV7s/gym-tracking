@@ -1,6 +1,8 @@
 export type WeightUnit = 'kg' | 'lb'
 export type Theme = 'system' | 'light' | 'dark'
 export type OneRepMaxFormula = 'epley' | 'brzycki'
+export const LOCALES = ['es', 'en'] as const
+export type Locale = (typeof LOCALES)[number]
 
 export interface Profile {
   id: string
@@ -9,6 +11,7 @@ export interface Profile {
   theme: Theme
   defaultRestSeconds: number
   oneRepMaxFormula: OneRepMaxFormula
+  locale: Locale
 }
 
 export type ProfileUpdate = Partial<Omit<Profile, 'id'>>
