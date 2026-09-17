@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import { Home, CalendarDays, ClipboardList, TrendingUp } from 'lucide-vue-next'
+import { Home, CalendarDays, ClipboardList, TrendingUp } from '@lucide/vue'
 
 const tabs = [
   { to: '/', label: 'Inicio', icon: Home },

@@ -62,7 +62,7 @@ App para registrar entrenamientos de gimnasio y analizar el progreso:
 ### 2.1 Dependencias a agregar
 
 ```sh
-pnpm add @supabase/supabase-js zod date-fns chart.js vue-chartjs tailwindcss @tailwindcss/vite lucide-vue-next
+pnpm add @supabase/supabase-js zod date-fns chart.js vue-chartjs tailwindcss @tailwindcss/vite @lucide/vue
 pnpm add -D supabase vite-plugin-pwa shadcn-vue
 # shadcn-vue añade por su cuenta: reka-ui, clsx, tailwind-merge, class-variance-authority, tw-animate-css, vue-sonner
 ```
@@ -125,7 +125,7 @@ src/
 ├── App.vue
 ├── router/
 │   ├── index.ts
-│   └── guards.ts                # requiresAuth → redirige a /login
+│   └── guards.ts                # rutas sin meta.public → redirige a /login?redirect=
 ├── lib/
 │   └── supabase.ts              # createClient tipado (única instancia)
 ├── types/
@@ -330,7 +330,7 @@ Lectura de una sesión completa: una sola query con embed de PostgREST
 
 ### 6.1 Autenticación
 - Registro y login con email + password; opción de magic link.
-- Rutas protegidas (`meta.requiresAuth`); redirección a `/login` y de vuelta tras autenticarse.
+- Rutas protegidas por defecto (solo `meta.public: true` es libre); redirección a `/login?redirect=` y de vuelta tras autenticarse.
 - Cerrar sesión desde Ajustes. Restaurar sesión al recargar (lo maneja el SDK; el store escucha `onAuthStateChange`).
 
 ### 6.2 Ejercicios
@@ -411,10 +411,10 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 - [x] Test SQL de RLS (pgTAP en `supabase/tests/rls.test.sql`, `pnpm db:test`).
 
 ### Fase 2 — Autenticación
-- [ ] Store `auth` (sesión, `onAuthStateChange`).
-- [ ] `LoginView`, `RegisterView`, guard `requiresAuth`, redirección post-login.
-- [ ] Store `profile` + `SettingsView` básica (preferencias, cerrar sesión).
-- [ ] E2E: registro → login → acceso a ruta protegida → logout.
+- [x] Store `auth` (sesión, `onAuthStateChange`).
+- [x] `LoginView`, `RegisterView`, guard de auth (`meta.public` marca rutas públicas; el resto exige sesión), redirección post-login.
+- [x] Store `profile` + `SettingsView` básica (preferencias, cerrar sesión).
+- [x] E2E: registro → login → acceso a ruta protegida → logout.
 
 ### Fase 3 — Dominio y repositorios
 - [ ] `domain/models` + `domain/schemas` con tests.
