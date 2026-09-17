@@ -70,9 +70,7 @@ describe('workoutSetInputSchema', () => {
 
   it('bounds rpe between 1 and 10', () => {
     expect(workoutSetInputSchema.safeParse({ reps: 8, weightKg: 80, rpe: 11 }).success).toBe(false)
-    expect(workoutSetInputSchema.safeParse({ reps: 8, weightKg: 80, rpe: 0.5 }).success).toBe(
-      false,
-    )
+    expect(workoutSetInputSchema.safeParse({ reps: 8, weightKg: 80, rpe: 0.5 }).success).toBe(false)
     expect(workoutSetInputSchema.safeParse({ reps: 8, weightKg: 80, rpe: 8.5 }).success).toBe(true)
   })
 })

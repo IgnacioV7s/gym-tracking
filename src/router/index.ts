@@ -22,6 +22,7 @@ const router = createRouter({
     { path: '/analytics', name: 'analytics', component: () => import('@/views/AnalyticsView.vue') },
     { path: '/settings', name: 'settings', component: () => import('@/views/SettingsView.vue') },
     { path: '/exercises', name: 'exercises', component: () => import('@/views/ExercisesView.vue') },
+    { path: '/workout', name: 'workout', component: () => import('@/views/WorkoutView.vue') },
   ],
 })
 

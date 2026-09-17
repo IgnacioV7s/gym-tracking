@@ -428,11 +428,11 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 - [x] E2E: crear ejercicio custom y encontrarlo.
 
 ### Fase 5 — Sesión de entrenamiento
-- [ ] Store `activeWorkout` con guardado incremental (upsert + debounce + estado de guardado).
-- [ ] `WorkoutView`: agregar ejercicios, series, inputs, completar, "anterior".
-- [ ] `useTimer` + `RestTimer`.
-- [ ] Finalizar sesión + resumen. Reanudar sesión en curso.
-- [ ] E2E: sesión libre completa.
+- [x] Store `activeWorkout` con guardado incremental (upsert + debounce + estado de guardado).
+- [x] `WorkoutView`: agregar ejercicios, series, inputs, completar, "anterior".
+- [x] `useTimer` + `RestTimer`.
+- [x] Finalizar sesión + resumen (volumen, series, duración; PRs se agregan en análisis). Reanudar sesión en curso.
+- [x] E2E: sesión libre completa.
 
 ### Fase 6 — Rutinas
 - [ ] Store `routines`. `RoutinesView` + `RoutineEditView`.

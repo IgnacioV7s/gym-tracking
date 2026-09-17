@@ -53,5 +53,15 @@ export const useAuthStore = defineStore('auth', () => {
     if (error) throw error
   }
 
-  return { session, user, isAuthenticated, initialized, init, signUp, signIn, signInWithMagicLink, signOut }
+  return {
+    session,
+    user,
+    isAuthenticated,
+    initialized,
+    init,
+    signUp,
+    signIn,
+    signInWithMagicLink,
+    signOut,
+  }
 })

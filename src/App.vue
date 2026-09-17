@@ -6,11 +6,13 @@ import BottomNav from '@/components/layout/BottomNav.vue'
 import { useAuthStore } from '@/stores/auth'
 import { useProfileStore } from '@/stores/profile'
 import { useExercisesStore } from '@/stores/exercises'
+import { useActiveWorkoutStore } from '@/stores/activeWorkout'
 
 const route = useRoute()
 const auth = useAuthStore()
 const profileStore = useProfileStore()
 const exercisesStore = useExercisesStore()
+const activeWorkout = useActiveWorkoutStore()
 
 const showNav = computed(() => !route.meta.public)
 
@@ -21,6 +23,7 @@ watch(
     else {
       profileStore.reset()
       exercisesStore.reset()
+      activeWorkout.reset()
     }
   },
   { immediate: true },
