@@ -400,11 +400,11 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 - [x] `assets/main.css` con tokens y tema. Layout base + navegación + rutas lazy placeholder.
 
 ### Fase 1 — Esquema y seguridad
-- [ ] Migración `0001_initial_schema.sql` (tablas, enums, índices, triggers).
-- [ ] Migración `0002_rls_policies.sql` + trigger de creación de `profiles`.
-- [ ] Migración `0003_seed_exercises.sql` (catálogo global).
-- [ ] `pnpm db:types` → `src/types/database.ts`.
-- [ ] Test SQL de RLS (pgTAP en `supabase/tests/`, o al menos un e2e que verifique que un usuario no ve datos de otro).
+- [x] Migración `0001_initial_schema.sql` (tablas, enums, índices, triggers).
+- [x] Migración `0002_rls_policies.sql` + trigger de creación de `profiles`.
+- [x] Migración `0003_seed_exercises.sql` (catálogo global).
+- [x] `pnpm db:types` → `src/types/database.ts`.
+- [x] Test SQL de RLS (pgTAP en `supabase/tests/rls.test.sql`, `pnpm db:test`).
 
 ### Fase 2 — Autenticación
 - [ ] Store `auth` (sesión, `onAuthStateChange`).
@@ -510,6 +510,7 @@ pnpm db:reset             # supabase db reset   (re-aplica migraciones + seed.sq
 pnpm db:migrate <name>    # supabase migration new <name>
 pnpm db:push              # supabase db push    (aplica migraciones al proyecto remoto)
 pnpm db:types             # supabase gen types typescript --local > src/types/database.ts
+pnpm db:test              # supabase test db    (pgTAP en supabase/tests/)
 ```
 
 Verificación mínima antes de cada commit:
@@ -527,7 +528,7 @@ pnpm lint && pnpm type-check && pnpm test:unit --run
 | Unit        | `domain/*` (100% de `analytics`), schemas, mappers, composables | Vitest                  | `*.spec.ts` junto al archivo |
 | Store       | Stores con repositorios mockeados (interfaz de `domain`)      | Vitest                    | `*.spec.ts` junto al archivo |
 | Componente  | Componentes con lógica (SetRow, RestTimer, selectores)        | Vitest + @vue/test-utils  | `*.spec.ts` junto al archivo |
-| BD          | Políticas RLS, triggers                                       | pgTAP (`supabase test db`) | `supabase/tests/`           |
+| BD          | Políticas RLS, triggers                                       | pgTAP (`pnpm db:test`)    | `supabase/tests/`            |
 | E2E         | Flujos críticos por fase contra Supabase local                | Playwright                | `e2e/*.spec.ts`              |
 
 Principios: testear comportamiento, no implementación. Los repositorios Supabase no se testean unitariamente (son adaptadores finos); los cubre el E2E. Los tests de analytics usan datasets pequeños con valores esperados calculados a mano en el propio test.
