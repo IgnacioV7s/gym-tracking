@@ -16,7 +16,7 @@
 7. **Backend = Supabase**. Todo cambio de esquema va en una migración SQL en `supabase/migrations/`. Nunca editar tablas a mano en el dashboard sin dejar la migración en el repo.
 8. **Seguridad**: toda tabla con datos de usuario tiene RLS habilitado y políticas por `auth.uid()`. Solo se usa la `anon key` en el cliente; la `service_role key` **jamás** entra al repo ni al frontend.
 9. **Secretos** solo en `.env.local` (ignorado por git). `.env.example` documenta las variables sin valores reales.
-10. Idioma: **UI en español**, **código, identificadores, SQL y commits en inglés**.
+10. Idioma: **código, identificadores, SQL y commits en inglés**. Textos de UI vía **i18n** (`src/i18n/`, español por defecto e inglés). Desde la Fase 7 ningún string visible se escribe literal en componentes: siempre `t('clave')`. Antes de esa fase, español literal.
 11. Cuando termines una tarea, marca la casilla correspondiente en la sección 8 en el mismo commit.
 12. Comandos disponibles: ver sección 10. No inventes scripts que no estén en `package.json`.
 
@@ -53,7 +53,8 @@ App para registrar entrenamientos de gimnasio y analizar el progreso:
 | Gráficos        | **Chart.js** + `vue-chartjs`                      | Solo se importa en vistas de análisis              |
 | Fechas          | **date-fns**                                      | Nunca `moment`; timestamps ISO/`timestamptz`       |
 | Validación      | **Zod**                                           | Formularios + validación de import/export          |
-| PWA             | `vite-plugin-pwa`                                 | Fase 8; cachea el shell, no los datos              |
+| i18n            | **vue-i18n** v11                                  | `es` (default) y `en`; mensajes en `src/i18n/locales/*.json`; idioma en perfil |
+| PWA             | `vite-plugin-pwa`                                 | Fase 9; cachea el shell, no los datos              |
 | Unit tests      | Vitest 4 + `@vue/test-utils` + jsdom              | Repositorios mockeados por interfaz                |
 | E2E             | Playwright                                        | Contra Supabase local (`supabase start`)           |
 | Lint / formato  | oxlint + ESLint + Prettier                        | `semi: false`, `singleQuote`, width 100            |
@@ -157,6 +158,11 @@ src/
 │   ├── routines.ts
 │   ├── workouts.ts
 │   └── activeWorkout.ts         # sesión en curso (guardado incremental)
+├── i18n/
+│   ├── index.ts                 # createI18n, detección de idioma, helper de fechas por locale
+│   └── locales/
+│       ├── es.json
+│       └── en.json
 ├── composables/
 │   ├── useTimer.ts
 │   └── usePeriod.ts
@@ -439,12 +445,21 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 - [ ] Empezar sesión desde rutina con pre-carga.
 - [ ] E2E: crear rutina y empezar sesión desde ella.
 
-### Fase 7 — Historial y análisis
+### Fase 7 — i18n (español / inglés)
+- [ ] Migración: columna `profiles.locale text not null default 'es' check (locale in ('es','en'))`; regenerar tipos.
+- [ ] `vue-i18n` configurado (`legacy: false`), `es.json` + `en.json`, fallback a `es`. Idioma inicial: perfil → `navigator.language` → `es`.
+- [ ] Extraer **todos** los strings existentes (vistas, componentes, toasts, aria-labels, labels de enums en `domain/models`) a claves. Los labels de enums (`MUSCLE_GROUP_LABELS`, `EQUIPMENT_LABELS`) pasan a claves `muscle.<key>` / `equipment.<key>`; el dominio deja de contener texto de UI.
+- [ ] Selector de idioma en Ajustes (persistido en perfil). `<html lang>` y `date-fns` locale siguen al idioma.
+- [ ] Catálogo global de ejercicios: columna `name_en` en `exercises` (migración) y el mapper elige según locale; los ejercicios propios del usuario no se traducen.
+- [ ] Test unitario que verifica que `es.json` y `en.json` tienen exactamente las mismas claves.
+- [ ] E2E existentes adaptados (usan `es`, que es el default).
+
+### Fase 8 — Historial y análisis
 - [ ] Store `workouts` (rango de fechas, paginación). `HistoryView`, `WorkoutDetailView`, calendario.
 - [ ] `domain/analytics/*` con tests exhaustivos (sin datos, un dato, warmups excluidos, reps ≥ 37 en Brzycki).
 - [ ] `usePeriod` + componentes de gráfico. `AnalyticsView`. `ExerciseDetailView`.
 
-### Fase 8 — PWA, backup y pulido
+### Fase 9 — PWA, backup y pulido
 - [ ] `vite-plugin-pwa` (shell cacheado; datos siempre desde red).
 - [ ] Export / import JSON.
 - [ ] Revisión de accesibilidad, estados vacíos, errores de red.
@@ -470,7 +485,7 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 
 **type**: `feat` | `fix` | `refactor` | `test` | `docs` | `chore` | `style` | `perf` | `build` | `ci`
 
-**scope**: `db` | `auth` | `domain` | `data` | `store` | `ui` | `workout` | `routine` | `exercise` | `history` | `analytics` | `settings` | `pwa` | `router` | `deps` | `tooling` | `plan`
+**scope**: `db` | `auth` | `domain` | `data` | `store` | `ui` | `workout` | `routine` | `exercise` | `history` | `analytics` | `settings` | `i18n` | `pwa` | `router` | `deps` | `tooling` | `plan`
 
 Ejemplos:
 
@@ -553,6 +568,7 @@ Principios: testear comportamiento, no implementación. Los repositorios Supabas
 | 8   | Chart.js                                    | Ligero, tree-shakeable, bien soportado en Vue.                                     |
 | 9   | shadcn-vue + Tailwind                       | Componentes accesibles (reka-ui) copiados al repo, no dependencia opaca; velocidad de UI. |
 | 10  | Sin modo offline en v1                      | Complejidad alta (cola + conflictos); se evalúa en v2 con cola local de mutaciones. |
+| 11  | i18n con vue-i18n, JSON plano por idioma     | Estándar en Vue; mensajes fuera del código; fácil de agregar idiomas. `es` default porque es el idioma del usuario principal. |
 
 ---
 
