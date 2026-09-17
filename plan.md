@@ -49,6 +49,7 @@ App para registrar entrenamientos de gimnasio y analizar el progreso:
 | Backend         | **Supabase** (Postgres + Auth + PostgREST)        | Proyecto propio; CLI para migraciones y tipos      |
 | Cliente BD      | `@supabase/supabase-js` v2                        | Tipos generados con `supabase gen types`           |
 | Auth            | Supabase Auth: email + password, magic link       | Sesión persistida por el SDK (localStorage)        |
+| UI              | **shadcn-vue** + Tailwind CSS v4 + lucide icons   | Componentes en `components/ui/` (generados, no editar a mano; `pnpm exec shadcn-vue add <c>`) |
 | Gráficos        | **Chart.js** + `vue-chartjs`                      | Solo se importa en vistas de análisis              |
 | Fechas          | **date-fns**                                      | Nunca `moment`; timestamps ISO/`timestamptz`       |
 | Validación      | **Zod**                                           | Formularios + validación de import/export          |
@@ -61,8 +62,9 @@ App para registrar entrenamientos de gimnasio y analizar el progreso:
 ### 2.1 Dependencias a agregar
 
 ```sh
-pnpm add @supabase/supabase-js zod date-fns chart.js vue-chartjs
-pnpm add -D supabase vite-plugin-pwa
+pnpm add @supabase/supabase-js zod date-fns chart.js vue-chartjs tailwindcss @tailwindcss/vite lucide-vue-next
+pnpm add -D supabase vite-plugin-pwa shadcn-vue
+# shadcn-vue añade por su cuenta: reka-ui, clsx, tailwind-merge, class-variance-authority, tw-animate-css, vue-sonner
 ```
 
 ### 2.2 Variables de entorno
@@ -159,7 +161,8 @@ src/
 │   ├── useTimer.ts
 │   └── usePeriod.ts
 ├── components/
-│   ├── ui/
+│   ├── ui/                      # shadcn-vue (generado)
+│   ├── layout/                  # BottomNav, AppHeader
 │   ├── workout/
 │   ├── routine/
 │   └── charts/
@@ -178,7 +181,7 @@ src/
 │   ├── AnalyticsView.vue
 │   └── SettingsView.vue
 ├── assets/
-│   └── main.css
+│   └── main.css                 # tailwind + tokens shadcn (tema claro/oscuro por clase .dark)
 └── __tests__/
 e2e/
 └── *.spec.ts
@@ -381,7 +384,7 @@ Gráficos: línea (1RM y volumen por ejercicio), barras (volumen semanal, series
 
 - **Mobile-first**: se usa en el gym con una mano. Targets táctiles ≥ 44px, `inputmode="decimal"`, botones ± para reps/peso.
 - Navegación inferior con 4 tabs: Inicio, Historial, Rutinas, Análisis. Ajustes desde Inicio.
-- Tema claro/oscuro con CSS variables en `assets/main.css`. Sin framework CSS.
+- UI con **shadcn-vue** sobre Tailwind v4. Tema claro/oscuro vía clase `.dark` en `<html>` (store `profile` la aplica según preferencia `system | light | dark`). Sin fuentes externas.
 - Estados de red visibles: skeletons al cargar, toasts en error, indicador de guardado en la sesión activa.
 - Accesibilidad: labels en todos los inputs, roles ARIA en modales, foco visible, contraste AA.
 
@@ -398,6 +401,7 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 - [x] `supabase start` + crear `.env.local` con los valores locales.
 - [x] `lib/supabase.ts` con cliente tipado.
 - [x] `assets/main.css` con tokens y tema. Layout base + navegación + rutas lazy placeholder.
+- [x] shadcn-vue + Tailwind v4 configurados; componentes base (button, input, label, card, badge, separator, skeleton, dialog, sheet, tabs, sonner).
 
 ### Fase 1 — Esquema y seguridad
 - [x] Migración `0001_initial_schema.sql` (tablas, enums, índices, triggers).
@@ -547,7 +551,7 @@ Principios: testear comportamiento, no implementación. Los repositorios Supabas
 | 6   | Guardado incremental con upsert + debounce  | Sesión en el gym con red inestable: se pierde como máximo la última serie.         |
 | 7   | Pesos siempre en kg en BD                   | Una sola fuente de verdad; conversión solo en presentación.                        |
 | 8   | Chart.js                                    | Ligero, tree-shakeable, bien soportado en Vue.                                     |
-| 9   | Sin framework CSS                           | App pequeña; control total del tema; menos dependencias.                           |
+| 9   | shadcn-vue + Tailwind                       | Componentes accesibles (reka-ui) copiados al repo, no dependencia opaca; velocidad de UI. |
 | 10  | Sin modo offline en v1                      | Complejidad alta (cola + conflictos); se evalúa en v2 con cola local de mutaciones. |
 
 ---
