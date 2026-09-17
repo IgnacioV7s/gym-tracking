@@ -1,1 +1,4 @@
 export type * from './profileRepository'
+export type * from './exerciseRepository'
+export type * from './routineRepository'
+export type * from './workoutRepository'

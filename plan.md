@@ -417,10 +417,10 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 - [x] E2E: registro → login → acceso a ruta protegida → logout.
 
 ### Fase 3 — Dominio y repositorios
-- [ ] `domain/models` + `domain/schemas` con tests.
-- [ ] Interfaces de repositorio en `domain/repositories`.
-- [ ] `data/mappers` (row ↔ model) con tests unitarios.
-- [ ] Implementaciones Supabase de repositorios (`exercises`, `routines`, `workouts`).
+- [x] `domain/models` + `domain/schemas` con tests.
+- [x] Interfaces de repositorio en `domain/repositories`.
+- [x] `data/mappers` (row ↔ model) con tests unitarios.
+- [x] Implementaciones Supabase de repositorios (`exercises`, `routines`, `workouts`).
 
 ### Fase 4 — Ejercicios
 - [ ] Store `exercises`.
@@ -535,7 +535,7 @@ pnpm lint && pnpm type-check && pnpm test:unit --run
 | BD          | Políticas RLS, triggers                                       | pgTAP (`pnpm db:test`)    | `supabase/tests/`            |
 | E2E         | Flujos críticos por fase contra Supabase local                | Playwright                | `e2e/*.spec.ts`              |
 
-Principios: testear comportamiento, no implementación. Los repositorios Supabase no se testean unitariamente (son adaptadores finos); los cubre el E2E. Los tests de analytics usan datasets pequeños con valores esperados calculados a mano en el propio test.
+Principios: testear comportamiento, no implementación. Los repositorios Supabase se cubren con `src/data/repositories/repositories.integration.spec.ts` (corre contra Supabase local; se salta si no hay `VITE_SUPABASE_URL`). Los tests de analytics usan datasets pequeños con valores esperados calculados a mano en el propio test.
 
 ---
 
