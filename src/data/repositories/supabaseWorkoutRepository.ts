@@ -8,7 +8,6 @@ import {
   workoutSetFromRow,
   workoutSetToInsert,
   workoutSetToUpdate,
-  workoutSummaryFromRow,
 } from '@/data/mappers/workout'
 
 export function createSupabaseWorkoutRepository(
@@ -28,13 +27,13 @@ export function createSupabaseWorkoutRepository(
     async listBetween(from, to) {
       const { data, error } = await client
         .from('workouts')
-        .select('*')
+        .select(WORKOUT_NESTED_SELECT)
         .not('finished_at', 'is', null)
         .gte('started_at', from)
         .lte('started_at', to)
         .order('started_at', { ascending: false })
       if (error) throw error
-      return data.map(workoutSummaryFromRow)
+      return data.map(workoutFromRow)
     },
 
     get: fetchOne,

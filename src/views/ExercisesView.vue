@@ -151,12 +151,15 @@ async function toggleArchive(exercise: Exercise) {
       class="flex items-center gap-3 px-3 py-2"
       :class="{ 'opacity-60': exercise.archivedAt }"
     >
-      <div class="min-w-0 flex-1">
+      <RouterLink
+        :to="{ name: 'exercise-detail', params: { id: exercise.id } }"
+        class="min-w-0 flex-1 py-1"
+      >
         <p class="truncate font-medium">{{ label }}</p>
         <p class="text-xs text-muted-foreground">
           {{ t(`muscle.${exercise.primaryMuscle}`) }} · {{ t(`equipment.${exercise.equipment}`) }}
         </p>
-      </div>
+      </RouterLink>
       <Badge v-if="exercise.userId" variant="secondary">{{ t('exercises.own') }}</Badge>
       <template v-if="exercise.userId">
         <Button

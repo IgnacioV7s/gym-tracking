@@ -456,9 +456,9 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 - [x] E2E existentes adaptados (Playwright con `locale: 'es-ES'`) + `e2e/i18n.spec.ts` que cambia a inglés y verifica UI y catálogo.
 
 ### Fase 8 — Historial y análisis
-- [ ] Store `workouts` (rango de fechas, paginación). `HistoryView`, `WorkoutDetailView`, calendario.
-- [ ] `domain/analytics/*` con tests exhaustivos (sin datos, un dato, warmups excluidos, reps ≥ 37 en Brzycki).
-- [ ] `usePeriod` + componentes de gráfico. `AnalyticsView`. `ExerciseDetailView`.
+- [x] Store `workouts` (caché por rango de fechas). `HistoryView` (calendario mensual + lista por semana), `WorkoutDetailView` (ver, renombrar, notas, eliminar; las series no se editan a posteriori en v1).
+- [x] `domain/analytics/*` con tests exhaustivos (sin datos, un dato, warmups excluidos, reps ≥ 37 en Brzycki).
+- [x] `usePeriod` + componentes de gráfico. `AnalyticsView`. `ExerciseDetailView`.
 
 ### Fase 9 — Onboarding
 - [ ] Migración: `profiles.onboarded_at timestamptz null`; regenerar tipos.

@@ -238,5 +238,61 @@
   "validation": {
     "nameRequired": "El nombre es obligatorio",
     "atLeastOneExercise": "Agrega al menos un ejercicio"
+  },
+  "history": {
+    "title": "Historial",
+    "empty": "No hay sesiones en este mes.",
+    "emptyHint": "Empieza un entrenamiento desde Inicio.",
+    "prevMonth": "Mes anterior",
+    "nextMonth": "Mes siguiente",
+    "calendar": "Calendario de entrenamientos",
+    "trainedOn": "Entrenaste el {date}",
+    "weekOf": "Semana del {date}",
+    "sessions": "{n} sesiones",
+    "detail": {
+      "title": "Sesión",
+      "notFound": "Sesión no encontrada",
+      "name": "Nombre",
+      "notes": "Notas",
+      "noNotes": "Sin notas",
+      "deleteTitle": "¿Eliminar sesión?",
+      "deleteDescription": "Se borrará esta sesión y todas sus series.",
+      "deleted": "Sesión eliminada",
+      "startedAt": "Inicio",
+      "exercisesCount": "{n} ejercicios"
+    }
+  },
+  "analytics": {
+    "title": "Análisis",
+    "period": "Período",
+    "previousPeriod": "Período anterior",
+    "nextPeriod": "Período siguiente",
+    "preset": {
+      "week": "Semana",
+      "month": "Mes",
+      "3months": "3 meses",
+      "year": "Año",
+      "custom": "Personalizado"
+    },
+    "from": "Desde",
+    "to": "Hasta",
+    "vsPrevious": "vs. período anterior",
+    "noPrevious": "Sin período anterior",
+    "sessions": "Sesiones",
+    "volume": "Volumen",
+    "sets": "Series",
+    "avgDuration": "Duración media",
+    "volumePerWeek": "Volumen por semana",
+    "setsByMuscle": "Series por grupo muscular",
+    "records": "Récords en el período",
+    "noRecords": "Sin récords en este período.",
+    "empty": "No hay sesiones en este período.",
+    "trend": "Tendencia",
+    "perWeek": "{value} / semana",
+    "oneRepMax": "1RM estimado",
+    "bestSet": "Mejor serie",
+    "oneRepMaxHistory": "1RM estimado por sesión",
+    "history": "Historial",
+    "lastSessions": "Últimas sesiones"
   }
 }

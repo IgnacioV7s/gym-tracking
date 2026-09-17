@@ -15,6 +15,7 @@ import { useActiveWorkoutStore } from '@/stores/activeWorkout'
 import { useExercisesStore } from '@/stores/exercises'
 import { useExerciseName } from '@/composables/useExerciseName'
 import { useProfileStore } from '@/stores/profile'
+import { useWorkoutsStore } from '@/stores/workouts'
 import { useTimer } from '@/composables/useTimer'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -36,6 +37,7 @@ const router = useRouter()
 const active = useActiveWorkoutStore()
 const exercises = useExercisesStore()
 const profileStore = useProfileStore()
+const workoutsStore = useWorkoutsStore()
 const timer = useTimer()
 
 const pickerOpen = ref(false)
@@ -61,13 +63,11 @@ watch(
 )
 
 function onPick(exercise: Exercise) {
-  void active
-    .addExercise(exercise.id)
-    .catch((e) =>
-      toast.error(t('workout.couldNotAdd'), {
-        description: e instanceof Error ? e.message : undefined,
-      }),
-    )
+  void active.addExercise(exercise.id).catch((e) =>
+    toast.error(t('workout.couldNotAdd'), {
+      description: e instanceof Error ? e.message : undefined,
+    }),
+  )
 }
 
 function onUpdateSet(setId: string, changes: { reps?: number; weightKg?: number; type?: SetType }) {
@@ -83,6 +83,7 @@ async function finish() {
   busy.value = true
   try {
     finished.value = await active.finish()
+    workoutsStore.invalidate()
     confirmFinishOpen.value = false
     timer.stop()
   } catch (e) {

@@ -8,6 +8,7 @@ import { useProfileStore } from '@/stores/profile'
 import { useExercisesStore } from '@/stores/exercises'
 import { useActiveWorkoutStore } from '@/stores/activeWorkout'
 import { useRoutinesStore } from '@/stores/routines'
+import { useWorkoutsStore } from '@/stores/workouts'
 
 const route = useRoute()
 const auth = useAuthStore()
@@ -15,6 +16,7 @@ const profileStore = useProfileStore()
 const exercisesStore = useExercisesStore()
 const activeWorkout = useActiveWorkoutStore()
 const routinesStore = useRoutinesStore()
+const workoutsStore = useWorkoutsStore()
 
 const showNav = computed(() => !route.meta.public)
 
@@ -32,6 +34,7 @@ watch(
       exercisesStore.reset()
       activeWorkout.reset()
       routinesStore.reset()
+      workoutsStore.reset()
     }
   },
   { immediate: true },

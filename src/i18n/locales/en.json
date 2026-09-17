@@ -238,5 +238,61 @@
   "validation": {
     "nameRequired": "Name is required",
     "atLeastOneExercise": "Add at least one exercise"
+  },
+  "history": {
+    "title": "History",
+    "empty": "No sessions this month.",
+    "emptyHint": "Start a workout from Home.",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "calendar": "Training calendar",
+    "trainedOn": "Trained on {date}",
+    "weekOf": "Week of {date}",
+    "sessions": "{n} sessions",
+    "detail": {
+      "title": "Session",
+      "notFound": "Session not found",
+      "name": "Name",
+      "notes": "Notes",
+      "noNotes": "No notes",
+      "deleteTitle": "Delete session?",
+      "deleteDescription": "This session and all its sets will be deleted.",
+      "deleted": "Session deleted",
+      "startedAt": "Started",
+      "exercisesCount": "{n} exercises"
+    }
+  },
+  "analytics": {
+    "title": "Analytics",
+    "period": "Period",
+    "previousPeriod": "Previous period",
+    "nextPeriod": "Next period",
+    "preset": {
+      "week": "Week",
+      "month": "Month",
+      "3months": "3 months",
+      "year": "Year",
+      "custom": "Custom"
+    },
+    "from": "From",
+    "to": "To",
+    "vsPrevious": "vs. previous period",
+    "noPrevious": "No previous period",
+    "sessions": "Sessions",
+    "volume": "Volume",
+    "sets": "Sets",
+    "avgDuration": "Avg. duration",
+    "volumePerWeek": "Volume per week",
+    "setsByMuscle": "Sets by muscle group",
+    "records": "Records in this period",
+    "noRecords": "No records in this period.",
+    "empty": "No sessions in this period.",
+    "trend": "Trend",
+    "perWeek": "{value} / week",
+    "oneRepMax": "Estimated 1RM",
+    "bestSet": "Best set",
+    "oneRepMaxHistory": "Estimated 1RM per session",
+    "history": "History",
+    "lastSessions": "Recent sessions"
   }
 }

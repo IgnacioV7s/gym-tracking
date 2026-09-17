@@ -18,6 +18,11 @@ const router = createRouter({
     },
     { path: '/', name: 'home', component: () => import('@/views/HomeView.vue') },
     { path: '/history', name: 'history', component: () => import('@/views/HistoryView.vue') },
+    {
+      path: '/history/:id',
+      name: 'workout-detail',
+      component: () => import('@/views/WorkoutDetailView.vue'),
+    },
     { path: '/routines', name: 'routines', component: () => import('@/views/RoutinesView.vue') },
     {
       path: '/routines/new',
@@ -32,6 +37,11 @@ const router = createRouter({
     { path: '/analytics', name: 'analytics', component: () => import('@/views/AnalyticsView.vue') },
     { path: '/settings', name: 'settings', component: () => import('@/views/SettingsView.vue') },
     { path: '/exercises', name: 'exercises', component: () => import('@/views/ExercisesView.vue') },
+    {
+      path: '/exercises/:id',
+      name: 'exercise-detail',
+      component: () => import('@/views/ExerciseDetailView.vue'),
+    },
     { path: '/workout', name: 'workout', component: () => import('@/views/WorkoutView.vue') },
   ],
 })

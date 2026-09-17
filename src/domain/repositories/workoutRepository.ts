@@ -1,8 +1,8 @@
-import type { Workout, WorkoutSet, WorkoutSetInput, WorkoutSummary } from '@/domain/models'
+import type { Workout, WorkoutSet, WorkoutSetInput } from '@/domain/models'
 
 export interface WorkoutRepository {
-  /** Finished workouts started within [from, to], newest first. ISO strings. */
-  listBetween(from: string, to: string): Promise<WorkoutSummary[]>
+  /** Finished workouts (with exercises and sets) started within [from, to], newest first. ISO strings. */
+  listBetween(from: string, to: string): Promise<Workout[]>
   get(id: string): Promise<Workout | null>
   /** The user's in-progress workout, if any. */
   getActive(): Promise<Workout | null>
