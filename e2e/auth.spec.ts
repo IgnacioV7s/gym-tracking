@@ -16,6 +16,7 @@ test('sign up, reach a protected route, sign out and sign in again', async ({ pa
   await page.getByRole('button', { name: 'Crear cuenta' }).click()
 
   await expect(page).toHaveURL('/')
+  await page.getByRole('dialog').getByRole('button', { name: 'Omitir' }).click()
   await expect(page.getByRole('heading', { name: 'Hola, Tester' })).toBeVisible()
 
   await page.getByRole('link', { name: 'Ajustes' }).click()

@@ -294,5 +294,31 @@
     "oneRepMaxHistory": "1RM estimado por sesión",
     "history": "Historial",
     "lastSessions": "Últimas sesiones"
+  },
+  "onboarding": {
+    "title": "Bienvenido a Gym Tracking",
+    "stepOf": "Paso {n} de {total}",
+    "next": "Siguiente",
+    "skip": "Omitir",
+    "done": "¡A entrenar!",
+    "replay": "Ver tutorial",
+    "steps": [
+      {
+        "title": "Ejercicios",
+        "body": "Ya tienes un catálogo de ejercicios listo. Desde Inicio → Ejercicios puedes buscar, filtrar y crear los tuyos."
+      },
+      {
+        "title": "Rutinas o sesión libre",
+        "body": "Arma una rutina con tus ejercicios y objetivos, o toca «Empezar entrenamiento libre» y agrega ejercicios sobre la marcha."
+      },
+      {
+        "title": "Registra tus series",
+        "body": "En cada serie anota peso y repeticiones y márcala con ✓. El descanso arranca solo y todo se guarda al instante."
+      },
+      {
+        "title": "Mira tu progreso",
+        "body": "En Historial ves tus sesiones por día y en Análisis el volumen, tus récords y la tendencia de cada ejercicio."
+      }
+    ]
   }
 }

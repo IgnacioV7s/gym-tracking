@@ -12,12 +12,14 @@ import { Label } from '@/components/ui/label'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
+import OnboardingDialog from '@/components/onboarding/OnboardingDialog.vue'
 
 const { t } = useI18n()
 const auth = useAuthStore()
 const profileStore = useProfileStore()
 const router = useRouter()
 const signingOut = ref(false)
+const tutorialOpen = ref(false)
 
 const WEIGHT_UNITS = ['kg', 'lb'] as const
 const THEMES = ['system', 'light', 'dark'] as const
@@ -136,6 +138,8 @@ async function signOut() {
 
     <Separator />
 
+    <Button variant="outline" @click="tutorialOpen = true">{{ t('onboarding.replay') }}</Button>
+
     <div class="grid gap-2">
       <p class="text-sm text-muted-foreground">
         {{ t('settings.signedInAs', { email: auth.user?.email }) }}
@@ -145,4 +149,6 @@ async function signOut() {
       }}</Button>
     </div>
   </div>
+
+  <OnboardingDialog v-model:open="tutorialOpen" />
 </template>

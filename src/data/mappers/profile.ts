@@ -12,6 +12,7 @@ export function profileFromRow(row: ProfileRow): Profile {
     defaultRestSeconds: row.default_rest_seconds,
     oneRepMaxFormula: row.one_rep_max_formula as Profile['oneRepMaxFormula'],
     locale: row.locale as Profile['locale'],
+    onboardedAt: row.onboarded_at,
   }
 }
 
@@ -24,5 +25,6 @@ export function profileToRowUpdate(changes: ProfileUpdate): TablesUpdate<'profil
     row.default_rest_seconds = changes.defaultRestSeconds
   if (changes.oneRepMaxFormula !== undefined) row.one_rep_max_formula = changes.oneRepMaxFormula
   if (changes.locale !== undefined) row.locale = changes.locale
+  if (changes.onboardedAt !== undefined) row.onboarded_at = changes.onboardedAt
   return row
 }

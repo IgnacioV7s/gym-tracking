@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { toast } from 'vue-sonner'
@@ -10,12 +10,30 @@ import { useProfileStore } from '@/stores/profile'
 import { useActiveWorkoutStore } from '@/stores/activeWorkout'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import OnboardingDialog from '@/components/onboarding/OnboardingDialog.vue'
 
 const { t } = useI18n()
 const router = useRouter()
 const profileStore = useProfileStore()
 const active = useActiveWorkoutStore()
 const starting = ref(false)
+
+const onboardingDismissed = ref(false)
+const showOnboarding = computed(
+  () =>
+    !!profileStore.profile &&
+    profileStore.profile.onboardedAt === null &&
+    !onboardingDismissed.value,
+)
+
+async function finishOnboarding() {
+  onboardingDismissed.value = true
+  try {
+    await profileStore.update({ onboardedAt: new Date().toISOString() })
+  } catch {
+    // Not fatal: the tutorial will simply show again next time.
+  }
+}
 
 onMounted(() => active.load())
 
@@ -84,4 +102,6 @@ async function startFree() {
       </RouterLink>
     </Button>
   </nav>
+
+  <OnboardingDialog :open="showOnboarding" @finish="finishOnboarding" />
 </template>

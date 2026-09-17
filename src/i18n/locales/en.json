@@ -294,5 +294,31 @@
     "oneRepMaxHistory": "Estimated 1RM per session",
     "history": "History",
     "lastSessions": "Recent sessions"
+  },
+  "onboarding": {
+    "title": "Welcome to Gym Tracking",
+    "stepOf": "Step {n} of {total}",
+    "next": "Next",
+    "skip": "Skip",
+    "done": "Let's train!",
+    "replay": "Show tutorial",
+    "steps": [
+      {
+        "title": "Exercises",
+        "body": "A catalog of exercises is ready for you. From Home → Exercises you can search, filter and create your own."
+      },
+      {
+        "title": "Routines or free session",
+        "body": "Build a routine with your exercises and targets, or tap “Start free workout” and add exercises as you go."
+      },
+      {
+        "title": "Log your sets",
+        "body": "For each set enter weight and reps and tick ✓. The rest timer starts on its own and everything saves instantly."
+      },
+      {
+        "title": "Watch your progress",
+        "body": "History shows your sessions by day; Analytics shows volume, your records and the trend of each exercise."
+      }
+    ]
   }
 }

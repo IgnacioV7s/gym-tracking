@@ -17,7 +17,10 @@ test('a finished workout shows up in history, analytics and exercise detail', as
   await page.getByRole('button', { name: 'Saltar descanso' }).click()
   await page.getByRole('button', { name: 'Finalizar' }).click()
   await page.getByRole('dialog').getByRole('button', { name: 'Finalizar' }).click()
-  await page.getByRole('dialog', { name: 'Sesión completada' }).getByRole('button', { name: 'Listo' }).click()
+  await page
+    .getByRole('dialog', { name: 'Sesión completada' })
+    .getByRole('button', { name: 'Listo' })
+    .click()
 
   // History: calendar marks today and the list shows the session.
   await page.goto('/history')

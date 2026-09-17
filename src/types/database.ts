@@ -74,6 +74,7 @@ export type Database = {
           display_name: string | null
           id: string
           locale: string
+          onboarded_at: string | null
           one_rep_max_formula: string
           theme: string
           updated_at: string
@@ -85,6 +86,7 @@ export type Database = {
           display_name?: string | null
           id: string
           locale?: string
+          onboarded_at?: string | null
           one_rep_max_formula?: string
           theme?: string
           updated_at?: string
@@ -96,6 +98,7 @@ export type Database = {
           display_name?: string | null
           id?: string
           locale?: string
+          onboarded_at?: string | null
           one_rep_max_formula?: string
           theme?: string
           updated_at?: string

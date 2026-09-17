@@ -12,6 +12,8 @@ export interface Profile {
   defaultRestSeconds: number
   oneRepMaxFormula: OneRepMaxFormula
   locale: Locale
+  /** ISO timestamp when the first-run tutorial was completed or skipped. */
+  onboardedAt: string | null
 }
 
 export type ProfileUpdate = Partial<Omit<Profile, 'id'>>

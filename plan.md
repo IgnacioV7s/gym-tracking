@@ -461,11 +461,11 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 - [x] `usePeriod` + componentes de gráfico. `AnalyticsView`. `ExerciseDetailView`.
 
 ### Fase 9 — Onboarding
-- [ ] Migración: `profiles.onboarded_at timestamptz null`; regenerar tipos.
-- [ ] `OnboardingDialog` (shadcn Dialog, 3–4 pasos con indicador y "Siguiente/Omitir"): 1) crea o usa ejercicios, 2) arma una rutina o empieza libre, 3) registra series y completa para el descanso, 4) revisa historial y análisis. Textos vía i18n.
-- [ ] Se muestra en Inicio la primera vez que hay sesión y `onboardedAt` es null; al cerrar (o al terminar) se guarda `onboardedAt = now()`.
-- [ ] Reabrible desde Ajustes ("Ver tutorial").
-- [ ] Test de store/componente + E2E: aparece al registrarse, no vuelve a aparecer tras recargar.
+- [x] Migración: `profiles.onboarded_at timestamptz null`; regenerar tipos.
+- [x] `OnboardingDialog` (shadcn Dialog, 3–4 pasos con indicador y "Siguiente/Omitir"): 1) crea o usa ejercicios, 2) arma una rutina o empieza libre, 3) registra series y completa para el descanso, 4) revisa historial y análisis. Textos vía i18n.
+- [x] Se muestra en Inicio la primera vez que hay sesión y `onboardedAt` es null; al cerrar (o al terminar) se guarda `onboardedAt = now()`.
+- [x] Reabrible desde Ajustes ("Ver tutorial").
+- [x] Test de store/componente + E2E: aparece al registrarse, no vuelve a aparecer tras recargar.
 
 ### Fase 10 — PWA, backup y pulido
 - [ ] `vite-plugin-pwa` (shell cacheado; datos siempre desde red).
