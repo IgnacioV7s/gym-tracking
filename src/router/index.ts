@@ -19,6 +19,16 @@ const router = createRouter({
     { path: '/', name: 'home', component: () => import('@/views/HomeView.vue') },
     { path: '/history', name: 'history', component: () => import('@/views/HistoryView.vue') },
     { path: '/routines', name: 'routines', component: () => import('@/views/RoutinesView.vue') },
+    {
+      path: '/routines/new',
+      name: 'routine-new',
+      component: () => import('@/views/RoutineEditView.vue'),
+    },
+    {
+      path: '/routines/:id/edit',
+      name: 'routine-edit',
+      component: () => import('@/views/RoutineEditView.vue'),
+    },
     { path: '/analytics', name: 'analytics', component: () => import('@/views/AnalyticsView.vue') },
     { path: '/settings', name: 'settings', component: () => import('@/views/SettingsView.vue') },
     { path: '/exercises', name: 'exercises', component: () => import('@/views/ExercisesView.vue') },

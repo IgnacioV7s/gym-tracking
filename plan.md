@@ -441,9 +441,9 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 - [x] E2E: sesión libre completa.
 
 ### Fase 6 — Rutinas
-- [ ] Store `routines`. `RoutinesView` + `RoutineEditView`.
-- [ ] Empezar sesión desde rutina con pre-carga.
-- [ ] E2E: crear rutina y empezar sesión desde ella.
+- [x] Store `routines`. `RoutinesView` + `RoutineEditView`.
+- [x] Empezar sesión desde rutina con pre-carga.
+- [x] E2E: crear rutina y empezar sesión desde ella.
 
 ### Fase 7 — i18n (español / inglés)
 - [ ] Migración: columna `profiles.locale text not null default 'es' check (locale in ('es','en'))`; regenerar tipos.
