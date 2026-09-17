@@ -40,3 +40,14 @@ __screenshots__/
 
 test-results/
 playwright-report/
+
+# AI agents (local config, skills, caches)
+.agents/
+.claude/
+.cursor/
+.codex/
+.gemini/
+.windsurf/
+.aider*
+skills-lock.json
+CLAUDE.local.md
