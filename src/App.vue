@@ -5,10 +5,12 @@ import { Toaster } from '@/components/ui/sonner'
 import BottomNav from '@/components/layout/BottomNav.vue'
 import { useAuthStore } from '@/stores/auth'
 import { useProfileStore } from '@/stores/profile'
+import { useExercisesStore } from '@/stores/exercises'
 
 const route = useRoute()
 const auth = useAuthStore()
 const profileStore = useProfileStore()
+const exercisesStore = useExercisesStore()
 
 const showNav = computed(() => !route.meta.public)
 
@@ -16,7 +18,10 @@ watch(
   () => auth.isAuthenticated,
   (signedIn) => {
     if (signedIn) void profileStore.load()
-    else profileStore.reset()
+    else {
+      profileStore.reset()
+      exercisesStore.reset()
+    }
   },
   { immediate: true },
 )

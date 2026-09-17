@@ -423,9 +423,9 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 - [x] Implementaciones Supabase de repositorios (`exercises`, `routines`, `workouts`).
 
 ### Fase 4 — Ejercicios
-- [ ] Store `exercises`.
-- [ ] `ExercisesView`: lista global + propios, búsqueda, filtros, crear/editar/archivar.
-- [ ] E2E: crear ejercicio custom y encontrarlo.
+- [x] Store `exercises`.
+- [x] `ExercisesView`: lista global + propios, búsqueda, filtros, crear/editar/archivar.
+- [x] E2E: crear ejercicio custom y encontrarlo.
 
 ### Fase 5 — Sesión de entrenamiento
 - [ ] Store `activeWorkout` con guardado incremental (upsert + debounce + estado de guardado).
