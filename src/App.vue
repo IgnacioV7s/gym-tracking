@@ -21,8 +21,13 @@ const showNav = computed(() => !route.meta.public)
 watch(
   () => auth.isAuthenticated,
   (signedIn) => {
-    if (signedIn) void profileStore.load()
-    else {
+    if (signedIn) {
+      void profileStore.load().then(() => {
+        // A persisted session whose user no longer exists (e.g. the database
+        // was reset) has no profile row: drop it instead of hanging forever.
+        if (!profileStore.profile) void auth.signOut()
+      })
+    } else {
       profileStore.reset()
       exercisesStore.reset()
       activeWorkout.reset()

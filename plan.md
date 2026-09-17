@@ -324,7 +324,8 @@ Lectura de una sesión completa: una sola query con embed de PostgREST
 
 - `supabase migration new <name>` → SQL en `supabase/migrations/`. Nunca editar migraciones ya aplicadas en remoto.
 - `pnpm db:types` regenera `src/types/database.ts`. Se commitea junto con la migración que lo cambió.
-- Flujo: `supabase start` (local) → escribir migración → `supabase db reset` → verificar → commit → `supabase db push` al proyecto remoto.
+- Flujo: `supabase start` (local) → escribir migración → `supabase migration up` (aplica solo las nuevas y **conserva los datos**) → verificar → commit → `supabase db push` al proyecto remoto.
+- `supabase db reset` **borra toda la BD local** (usuarios incluidos). Usarlo solo cuando se edita una migración ya aplicada o se quiere partir de cero, y avisar al usuario antes.
 
 ### 5.5 Backup
 
@@ -532,7 +533,8 @@ pnpm format               # prettier sobre src/
 # Scripts a agregar en package.json (Fase 0)
 pnpm db:start             # supabase start
 pnpm db:stop              # supabase stop
-pnpm db:reset             # supabase db reset   (re-aplica migraciones + seed.sql en local)
+pnpm db:migrate:up        # supabase migration up (aplica migraciones nuevas sin borrar datos)
+pnpm db:reset             # supabase db reset   (BORRA la BD local y re-aplica todo)
 pnpm db:migrate <name>    # supabase migration new <name>
 pnpm db:push              # supabase db push    (aplica migraciones al proyecto remoto)
 pnpm db:types             # supabase gen types typescript --local > src/types/database.ts

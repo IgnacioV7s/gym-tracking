@@ -21,7 +21,8 @@
     "db:migrate": "supabase migration new",
     "db:push": "supabase db push",
     "db:types": "supabase gen types typescript --local > src/types/database.ts",
-    "db:test": "supabase test db"
+    "db:test": "supabase test db",
+    "db:migrate:up": "supabase migration up"
   },
   "dependencies": {
     "@lucide/vue": "^1.46.0",
