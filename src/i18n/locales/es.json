@@ -16,7 +16,8 @@
     "errorGeneric": "Algo salió mal",
     "couldNotSave": "No se pudo guardar",
     "couldNotDelete": "No se pudo eliminar",
-    "couldNotUpdate": "No se pudo actualizar"
+    "couldNotUpdate": "No se pudo actualizar",
+    "offline": "Sin conexión. Los cambios no se guardarán hasta que vuelva."
   },
   "nav": {
     "main": "Navegación principal",
@@ -320,5 +321,18 @@
         "body": "En Historial ves tus sesiones por día y en Análisis el volumen, tus récords y la tendencia de cada ejercicio."
       }
     ]
+  },
+  "backup": {
+    "title": "Copia de seguridad",
+    "export": "Exportar datos (JSON)",
+    "import": "Importar datos",
+    "importHint": "Se agregan a tu cuenta; no reemplazan lo existente.",
+    "exported": "Copia exportada",
+    "imported": "Importado: {exercises} ejercicios, {routines} rutinas, {workouts} sesiones",
+    "invalidFile": "El archivo no es una copia válida",
+    "couldNotExport": "No se pudo exportar",
+    "couldNotImport": "No se pudo importar",
+    "confirmTitle": "¿Importar esta copia?",
+    "confirmDescription": "Contiene {exercises} ejercicios, {routines} rutinas y {workouts} sesiones. Se sumarán a tus datos actuales."
   }
 }

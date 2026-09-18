@@ -16,7 +16,8 @@
     "errorGeneric": "Something went wrong",
     "couldNotSave": "Could not save",
     "couldNotDelete": "Could not delete",
-    "couldNotUpdate": "Could not update"
+    "couldNotUpdate": "Could not update",
+    "offline": "You are offline. Changes will not be saved until you reconnect."
   },
   "nav": {
     "main": "Main navigation",
@@ -320,5 +321,18 @@
         "body": "History shows your sessions by day; Analytics shows volume, your records and the trend of each exercise."
       }
     ]
+  },
+  "backup": {
+    "title": "Backup",
+    "export": "Export data (JSON)",
+    "import": "Import data",
+    "importHint": "Added to your account; existing data is kept.",
+    "exported": "Backup exported",
+    "imported": "Imported: {exercises} exercises, {routines} routines, {workouts} sessions",
+    "invalidFile": "The file is not a valid backup",
+    "couldNotExport": "Could not export",
+    "couldNotImport": "Could not import",
+    "confirmTitle": "Import this backup?",
+    "confirmDescription": "It contains {exercises} exercises, {routines} routines and {workouts} sessions. They will be added to your current data."
   }
 }

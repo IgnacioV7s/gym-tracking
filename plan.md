@@ -468,10 +468,17 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 - [x] Test de store/componente + E2E: aparece al registrarse, no vuelve a aparecer tras recargar.
 
 ### Fase 10 — PWA, backup y pulido
-- [ ] `vite-plugin-pwa` (shell cacheado; datos siempre desde red).
-- [ ] Export / import JSON.
-- [ ] Revisión de accesibilidad, estados vacíos, errores de red.
-- [ ] README real: setup local con Supabase CLI, variables, despliegue.
+- [x] `vite-plugin-pwa` (shell cacheado; datos siempre desde red).
+- [x] Export / import JSON (`data/backup.ts`, schema Zod v1; import suma datos con ids nuevos para ejercicios propios).
+- [x] Revisión de accesibilidad, estados vacíos, errores de red (banner offline, estados vacíos en todas las vistas, aria-labels en controles de icono).
+- [x] README real: setup local con Supabase CLI, variables, despliegue.
+
+### Fase 11 — Despliegue
+- [ ] Proyecto en supabase.com: `supabase link` + `pnpm db:push` (migraciones) y verificar que el seed global existe.
+- [ ] Auth remoto: Site URL y Redirect URLs de producción; SMTP propio (Resend o similar) para magic link y confirmaciones; decidir si se exige confirmación de email.
+- [ ] Hosting del frontend (Vercel o Netlify): build `pnpm build`, variables `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` del proyecto remoto, rewrite de SPA a `index.html`.
+- [ ] CI (GitHub Actions): lint + type-check + unit en cada push; `db push` manual.
+- [ ] Probar instalación PWA en Android/iOS contra producción.
 
 ---
 

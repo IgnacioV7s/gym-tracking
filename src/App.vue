@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import { useOnline } from '@vueuse/core'
+import { WifiOff } from '@lucide/vue'
 import { Toaster } from '@/components/ui/sonner'
 import BottomNav from '@/components/layout/BottomNav.vue'
 import { useAuthStore } from '@/stores/auth'
@@ -10,6 +13,8 @@ import { useActiveWorkoutStore } from '@/stores/activeWorkout'
 import { useRoutinesStore } from '@/stores/routines'
 import { useWorkoutsStore } from '@/stores/workouts'
 
+const { t } = useI18n()
+const online = useOnline()
 const route = useRoute()
 const auth = useAuthStore()
 const profileStore = useProfileStore()
@@ -42,6 +47,14 @@ watch(
 </script>
 
 <template>
+  <div
+    v-if="!online"
+    role="status"
+    class="flex items-center justify-center gap-2 bg-destructive px-4 py-2 text-sm text-white"
+  >
+    <WifiOff class="size-4" aria-hidden="true" />
+    {{ t('common.offline') }}
+  </div>
   <main class="mx-auto max-w-xl p-4 pb-[calc(3.5rem+env(safe-area-inset-bottom,0px)+1rem)]">
     <RouterView />
   </main>

@@ -13,6 +13,7 @@ import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import OnboardingDialog from '@/components/onboarding/OnboardingDialog.vue'
+import BackupSection from '@/components/settings/BackupSection.vue'
 
 const { t } = useI18n()
 const auth = useAuthStore()
@@ -135,6 +136,10 @@ async function signOut() {
         <NativeSelectOption value="brzycki">Brzycki</NativeSelectOption>
       </NativeSelect>
     </div>
+
+    <Separator />
+
+    <BackupSection />
 
     <Separator />
 
