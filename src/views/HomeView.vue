@@ -11,6 +11,7 @@ import { useActiveWorkoutStore } from '@/stores/activeWorkout'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import OnboardingDialog from '@/components/onboarding/OnboardingDialog.vue'
+import StreakCard from '@/components/streak/StreakCard.vue'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -69,7 +70,9 @@ async function startFree() {
     </Button>
   </header>
 
-  <Card v-if="active.workout" class="mt-6">
+  <StreakCard class="mt-6" />
+
+  <Card v-if="active.workout" class="mt-4">
     <CardHeader>
       <CardTitle>{{ t('home.activeSession') }}</CardTitle>
       <CardDescription>{{ active.workout.name }}</CardDescription>
@@ -84,7 +87,7 @@ async function startFree() {
     </CardContent>
   </Card>
 
-  <div v-else class="mt-6 grid gap-2">
+  <div v-else class="mt-4 grid gap-2">
     <Button size="lg" class="w-full" :disabled="starting || !active.loaded" @click="startFree">
       <Play class="size-4" />
       {{ t('home.startFree') }}

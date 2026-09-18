@@ -12,6 +12,7 @@ import { useExercisesStore } from '@/stores/exercises'
 import { useActiveWorkoutStore } from '@/stores/activeWorkout'
 import { useRoutinesStore } from '@/stores/routines'
 import { useWorkoutsStore } from '@/stores/workouts'
+import { useStreakStore } from '@/stores/streak'
 
 const { t } = useI18n()
 const online = useOnline()
@@ -22,6 +23,7 @@ const exercisesStore = useExercisesStore()
 const activeWorkout = useActiveWorkoutStore()
 const routinesStore = useRoutinesStore()
 const workoutsStore = useWorkoutsStore()
+const streakStore = useStreakStore()
 
 const showNav = computed(() => !route.meta.public)
 
@@ -40,6 +42,7 @@ watch(
       activeWorkout.reset()
       routinesStore.reset()
       workoutsStore.reset()
+      streakStore.reset()
     }
   },
   { immediate: true },

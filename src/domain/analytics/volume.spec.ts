@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import type { Workout, WorkoutSet } from '@/domain/models'
-import { workoutDurationMinutes, workoutVolumeKg, workoutWorkingSets } from './volume'
+import { cardioTotals, workoutDurationMinutes, workoutVolumeKg, workoutWorkingSets } from './volume'
 
 function set(overrides: Partial<WorkoutSet>): WorkoutSet {
   return {
@@ -11,6 +11,8 @@ function set(overrides: Partial<WorkoutSet>): WorkoutSet {
     rpe: null,
     type: 'normal',
     completed: true,
+    durationSeconds: null,
+    distanceM: null,
     ...overrides,
   }
 }
@@ -60,5 +62,28 @@ describe('volume', () => {
     expect(
       workoutDurationMinutes({ startedAt: workout.finishedAt!, finishedAt: workout.startedAt }),
     ).toBe(0)
+  })
+})
+
+describe('cardioTotals', () => {
+  it('sums duration and distance of completed sets of cardio exercises only', () => {
+    const cardio: Workout = {
+      ...workout,
+      exercises: [
+        {
+          id: 'c',
+          exerciseId: 'run',
+          position: 0,
+          notes: null,
+          sets: [
+            set({ reps: 0, weightKg: 0, durationSeconds: 1200, distanceM: 3000 }),
+            set({ reps: 0, weightKg: 0, durationSeconds: 600, distanceM: 1500, completed: false }),
+          ],
+        },
+        ...workout.exercises,
+      ],
+    }
+    expect(cardioTotals([cardio], (id) => id === 'run')).toEqual({ seconds: 1200, meters: 3000 })
+    expect(cardioTotals([], () => true)).toEqual({ seconds: 0, meters: 0 })
   })
 })

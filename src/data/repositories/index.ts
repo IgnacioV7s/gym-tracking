@@ -3,6 +3,7 @@ import { createSupabaseProfileRepository } from './supabaseProfileRepository'
 import { createSupabaseExerciseRepository } from './supabaseExerciseRepository'
 import { createSupabaseRoutineRepository } from './supabaseRoutineRepository'
 import { createSupabaseWorkoutRepository } from './supabaseWorkoutRepository'
+import { createSupabaseRestDayRepository } from './supabaseRestDayRepository'
 
 /** Default repository instances wired to the app's Supabase client. */
 export const repositories = {
@@ -10,4 +11,5 @@ export const repositories = {
   exercises: createSupabaseExerciseRepository(supabase),
   routines: createSupabaseRoutineRepository(supabase),
   workouts: createSupabaseWorkoutRepository(supabase),
+  restDays: createSupabaseRestDayRepository(supabase),
 }

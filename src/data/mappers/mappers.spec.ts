@@ -127,6 +127,8 @@ describe('workout mappers', () => {
               rpe: null,
               set_type: 'normal',
               completed: false,
+              duration_seconds: null,
+              distance_m: null,
             },
             {
               id: 's1',
@@ -137,6 +139,8 @@ describe('workout mappers', () => {
               rpe: 6,
               set_type: 'warmup',
               completed: true,
+              duration_seconds: null,
+              distance_m: null,
             },
           ],
         },
@@ -152,6 +156,8 @@ describe('workout mappers', () => {
       rpe: 6,
       type: 'warmup',
       completed: true,
+      durationSeconds: null,
+      distanceM: null,
     })
   })
 
@@ -164,6 +170,8 @@ describe('workout mappers', () => {
       rpe: null,
       set_type: 'normal',
       completed: false,
+      duration_seconds: null,
+      distance_m: null,
     })
     expect(workoutSetToUpdate({ completed: true, rpe: 9 })).toEqual({ completed: true, rpe: 9 })
     expect(workoutSetToUpdate({})).toEqual({})

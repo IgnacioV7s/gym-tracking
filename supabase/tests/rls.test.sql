@@ -1,7 +1,7 @@
 -- RLS isolation tests. Run with `pnpm db:test` (supabase test db).
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(14);
+select plan(17);
 
 -- Two users. Inserting into auth.users fires handle_new_user -> profiles.
 insert into auth.users (id, email, raw_user_meta_data)
@@ -10,7 +10,7 @@ values
   ('22222222-2222-4222-8222-222222222222', 'bob@test.local',   '{"display_name":"Bob"}');
 
 select is(
-  (select count(*) from public.profiles),
+  (select count(*) from public.profiles where id in ('11111111-1111-4111-8111-111111111111', '22222222-2222-4222-8222-222222222222')),
   2::bigint,
   'signup trigger creates one profile per user'
 );
@@ -65,6 +65,16 @@ values ('aaaaaaaa-0000-4000-8000-000000000003', 0, 8, 80, true);
 
 select is((select count(*) from public.workout_sets), 1::bigint, 'alice sees her set');
 
+insert into public.rest_days (date) values ('2026-09-18');
+select is((select count(*) from public.rest_days), 1::bigint, 'alice sees her rest day');
+
+select throws_ok(
+  $$ insert into public.rest_days (user_id, date) values ('22222222-2222-4222-8222-222222222222', '2026-09-19') $$,
+  '42501',
+  null,
+  'alice cannot insert a rest day for bob'
+);
+
 select throws_ok(
   $$ insert into public.workouts (name, user_id) values ('spoof', '22222222-2222-4222-8222-222222222222') $$,
   '42501',
@@ -82,6 +92,7 @@ select is((select count(*) from public.routines), 0::bigint, 'bob does not see a
 select is((select count(*) from public.routine_exercises), 0::bigint, 'bob does not see alice routine exercises');
 select is((select count(*) from public.workouts), 0::bigint, 'bob does not see alice workouts');
 select is((select count(*) from public.workout_sets), 0::bigint, 'bob does not see alice sets');
+select is((select count(*) from public.rest_days), 0::bigint, 'bob does not see alice rest days');
 
 -- Bob cannot attach a set to alice's workout exercise even knowing the id.
 select throws_ok(

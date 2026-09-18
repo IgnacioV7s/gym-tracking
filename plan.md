@@ -480,6 +480,19 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 - [ ] CI (GitHub Actions): lint + type-check + unit en cada push; `db push` manual.
 - [ ] Probar instalación PWA en Android/iOS contra producción.
 
+### Fase 12 — Cardio
+- [x] Migración: `workout_sets.duration_seconds int null`, `workout_sets.distance_m numeric(8,1) null`; seed de 7 ejercicios de cardio (con `name_en`).
+- [x] Modelo/mappers/schemas: `durationSeconds`, `distanceM` en `WorkoutSet` y `WorkoutSetInput`.
+- [x] `SetRow` en modo cardio (minutos + km) cuando el ejercicio es `primaryMuscle === 'cardio'`; `addSet` copia duración/distancia.
+- [x] Análisis: minutos y distancia de cardio por período; volumen en kg excluye cardio.
+- [x] Tests unitarios + E2E de sesión con cardio.
+
+### Fase 13 — Racha
+- [x] Migración: tabla `rest_days (user_id, date, note)` con PK `(user_id, date)` y RLS.
+- [x] `domain/analytics/streak.ts`: día activo = sesión terminada o descanso marcado; racha actual (viva si ayer fue activo aunque hoy no), racha récord; máximo 2 descansos consecutivos.
+- [x] Repositorio + store `restDays`; tarjeta de racha en Inicio con botón "Hoy descanso"; calendario de Historial distingue descanso.
+- [x] Tests unitarios (bordes de fecha) + E2E.
+
 ---
 
 ## 9. Convenciones de Git

@@ -45,6 +45,8 @@ const backupWorkoutSchema = z.object({
           rpe: z.number().min(1).max(10).nullable(),
           type: z.enum(SET_TYPES),
           completed: z.boolean(),
+          durationSeconds: z.int().min(0).nullable().default(null),
+          distanceM: z.number().min(0).nullable().default(null),
         }),
       ),
     }),

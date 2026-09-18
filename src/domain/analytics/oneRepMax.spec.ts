@@ -30,6 +30,8 @@ describe('bestOneRepMax', () => {
     rpe: null,
     type: 'normal',
     completed: true,
+    durationSeconds: null,
+    distanceM: null,
     ...o,
   })
 

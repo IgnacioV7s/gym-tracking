@@ -12,8 +12,12 @@ test('tutorial shows once after sign-up and can be replayed from settings', asyn
   await dialog.getByRole('button', { name: 'Siguiente' }).click()
   await dialog.getByRole('button', { name: 'Siguiente' }).click()
   await expect(dialog.getByText('Paso 4 de 4')).toBeVisible()
+  const saved = page.waitForResponse(
+    (r) => r.url().includes('/rest/v1/profiles') && r.request().method() === 'PATCH',
+  )
   await dialog.getByRole('button', { name: '¡A entrenar!' }).click()
   await expect(dialog).toBeHidden()
+  await saved
 
   await page.reload()
   await expect(page.getByRole('heading', { name: 'Hola, Tester' })).toBeVisible()

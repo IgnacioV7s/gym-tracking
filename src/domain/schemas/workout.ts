@@ -7,4 +7,6 @@ export const workoutSetInputSchema = z.object({
   rpe: z.number().min(1).max(10).nullable().optional(),
   type: z.enum(SET_TYPES).default('normal'),
   completed: z.boolean().default(false),
+  durationSeconds: z.int().min(0).max(86400).nullable().optional(),
+  distanceM: z.number().min(0).nullable().optional(),
 })

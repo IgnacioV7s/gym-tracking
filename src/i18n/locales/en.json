@@ -334,5 +334,30 @@
     "couldNotImport": "Could not import",
     "confirmTitle": "Import this backup?",
     "confirmDescription": "It contains {exercises} exercises, {routines} routines and {workouts} sessions. They will be added to your current data."
+  },
+  "streak": {
+    "title": "Streak",
+    "days": "{n} days in a row",
+    "daysOne": "1 day in a row",
+    "none": "No active streak",
+    "atRisk": "Train or mark a rest day today to keep it",
+    "best": "Best: {n} days",
+    "markRest": "Rest day today",
+    "unmarkRest": "Unmark today's rest",
+    "restMarked": "Rest day marked",
+    "restRemoved": "Rest day removed",
+    "trainedToday": "You already trained today",
+    "restToday": "Today is a rest day",
+    "legendTrained": "Trained",
+    "legendRest": "Rest",
+    "restOn": "Rest on {date}"
+  },
+  "cardio": {
+    "minutes": "Min",
+    "distance": "km",
+    "totalTime": "Cardio",
+    "totalDistance": "Distance",
+    "durationLabel": "Duration set {n} (minutes)",
+    "distanceLabel": "Distance set {n} (km)"
   }
 }

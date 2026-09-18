@@ -25,6 +25,8 @@ export function workoutSetFromRow(row: Tables<'workout_sets'>): WorkoutSet {
     rpe: row.rpe,
     type: row.set_type,
     completed: row.completed,
+    durationSeconds: row.duration_seconds,
+    distanceM: row.distance_m,
   }
 }
 
@@ -77,6 +79,8 @@ export function workoutSetToInsert(
     rpe: input.rpe ?? null,
     set_type: input.type ?? 'normal',
     completed: input.completed ?? false,
+    duration_seconds: input.durationSeconds ?? null,
+    distance_m: input.distanceM ?? null,
   }
 }
 
@@ -87,5 +91,7 @@ export function workoutSetToUpdate(input: Partial<WorkoutSetInput>): TablesUpdat
   if (input.rpe !== undefined) row.rpe = input.rpe
   if (input.type !== undefined) row.set_type = input.type
   if (input.completed !== undefined) row.completed = input.completed
+  if (input.durationSeconds !== undefined) row.duration_seconds = input.durationSeconds
+  if (input.distanceM !== undefined) row.distance_m = input.distanceM
   return row
 }

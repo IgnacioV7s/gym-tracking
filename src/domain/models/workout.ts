@@ -9,6 +9,9 @@ export interface WorkoutSet {
   rpe: number | null
   type: SetType
   completed: boolean
+  /** Cardio only. */
+  durationSeconds: number | null
+  distanceM: number | null
 }
 
 export interface WorkoutExercise {
@@ -45,4 +48,6 @@ export interface WorkoutSetInput {
   rpe?: number | null
   type?: SetType
   completed?: boolean
+  durationSeconds?: number | null
+  distanceM?: number | null
 }

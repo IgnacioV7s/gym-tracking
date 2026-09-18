@@ -334,5 +334,30 @@
     "couldNotImport": "No se pudo importar",
     "confirmTitle": "¿Importar esta copia?",
     "confirmDescription": "Contiene {exercises} ejercicios, {routines} rutinas y {workouts} sesiones. Se sumarán a tus datos actuales."
+  },
+  "streak": {
+    "title": "Racha",
+    "days": "Llevas {n} días seguidos",
+    "daysOne": "Llevas 1 día seguido",
+    "none": "Sin racha activa",
+    "atRisk": "Entrena o marca descanso hoy para mantenerla",
+    "best": "Récord: {n} días",
+    "markRest": "Hoy descanso",
+    "unmarkRest": "Quitar descanso de hoy",
+    "restMarked": "Descanso marcado",
+    "restRemoved": "Descanso quitado",
+    "trainedToday": "Hoy ya entrenaste",
+    "restToday": "Hoy es día de descanso",
+    "legendTrained": "Entrenado",
+    "legendRest": "Descanso",
+    "restOn": "Descanso el {date}"
+  },
+  "cardio": {
+    "minutes": "Min",
+    "distance": "km",
+    "totalTime": "Cardio",
+    "totalDistance": "Distancia",
+    "durationLabel": "Duración serie {n} (minutos)",
+    "distanceLabel": "Distancia serie {n} (km)"
   }
 }

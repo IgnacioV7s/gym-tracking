@@ -68,6 +68,17 @@ describe('workoutSetInputSchema', () => {
     })
   })
 
+  it('accepts cardio fields', () => {
+    expect(
+      workoutSetInputSchema.safeParse({
+        reps: 0,
+        weightKg: 0,
+        durationSeconds: 1200,
+        distanceM: 3500,
+      }).success,
+    ).toBe(true)
+  })
+
   it('bounds rpe between 1 and 10', () => {
     expect(workoutSetInputSchema.safeParse({ reps: 8, weightKg: 80, rpe: 11 }).success).toBe(false)
     expect(workoutSetInputSchema.safeParse({ reps: 8, weightKg: 80, rpe: 0.5 }).success).toBe(false)

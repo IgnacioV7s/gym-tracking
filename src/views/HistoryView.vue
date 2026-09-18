@@ -20,6 +20,8 @@ import { formatWeight } from '@/domain/units/weight'
 import { dateFnsLocale } from '@/i18n'
 import { useWorkoutsStore } from '@/stores/workouts'
 import { useProfileStore } from '@/stores/profile'
+import { useStreakStore } from '@/stores/streak'
+import { dayKey } from '@/domain/analytics'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
@@ -27,6 +29,7 @@ import { cn } from '@/lib/utils'
 const { t } = useI18n()
 const store = useWorkoutsStore()
 const profileStore = useProfileStore()
+const streakStore = useStreakStore()
 
 const month = ref(startOfMonth(new Date()))
 const workouts = ref<Workout[]>([])
@@ -44,6 +47,7 @@ async function load() {
 }
 
 watch(month, load, { immediate: true })
+streakStore.load()
 
 const days = computed(() =>
   eachDayOfInterval({
@@ -56,6 +60,10 @@ const trainedDays = computed(() => workouts.value.map((w) => new Date(w.startedA
 
 function trainedOn(day: Date) {
   return trainedDays.value.some((d) => isSameDay(d, day))
+}
+
+function restOn(day: Date) {
+  return !trainedOn(day) && streakStore.restDays.has(dayKey(day))
 }
 
 const weekdayLabels = computed(() =>
@@ -127,19 +135,30 @@ function describe(w: Workout) {
         :aria-label="
           trainedOn(day)
             ? t('history.trainedOn', { date: format(day, 'PPP', locale()) })
-            : format(day, 'PPP', locale())
+            : restOn(day)
+              ? t('streak.restOn', { date: format(day, 'PPP', locale()) })
+              : format(day, 'PPP', locale())
         "
         :class="
           cn(
             'flex aspect-square items-center justify-center rounded-md text-sm',
             !isSameMonth(day, month) && 'text-muted-foreground/40',
             trainedOn(day) && 'bg-primary font-semibold text-primary-foreground',
+            restOn(day) && 'bg-muted text-muted-foreground',
             isSameDay(day, new Date()) && !trainedOn(day) && 'ring-1 ring-primary',
           )
         "
       >
         {{ day.getDate() }}
       </div>
+    </div>
+    <div class="mt-2 flex gap-4 text-[11px] text-muted-foreground" aria-hidden="true">
+      <span class="flex items-center gap-1"
+        ><span class="size-2.5 rounded-sm bg-primary" />{{ t('streak.legendTrained') }}</span
+      >
+      <span class="flex items-center gap-1"
+        ><span class="size-2.5 rounded-sm bg-muted" />{{ t('streak.legendRest') }}</span
+      >
     </div>
   </div>
 

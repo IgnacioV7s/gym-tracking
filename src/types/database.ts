@@ -106,6 +106,27 @@ export type Database = {
         }
         Relationships: []
       }
+      rest_days: {
+        Row: {
+          created_at: string
+          date: string
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          note?: string | null
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          note?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       routine_exercises: {
         Row: {
           exercise_id: string
@@ -223,6 +244,8 @@ export type Database = {
       workout_sets: {
         Row: {
           completed: boolean
+          distance_m: number | null
+          duration_seconds: number | null
           id: string
           position: number
           reps: number
@@ -233,6 +256,8 @@ export type Database = {
         }
         Insert: {
           completed?: boolean
+          distance_m?: number | null
+          duration_seconds?: number | null
           id?: string
           position: number
           reps: number
@@ -243,6 +268,8 @@ export type Database = {
         }
         Update: {
           completed?: boolean
+          distance_m?: number | null
+          duration_seconds?: number | null
           id?: string
           position?: number
           reps?: number

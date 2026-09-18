@@ -16,6 +16,7 @@ import { useExercisesStore } from '@/stores/exercises'
 import { useExerciseName } from '@/composables/useExerciseName'
 import { useProfileStore } from '@/stores/profile'
 import { useWorkoutsStore } from '@/stores/workouts'
+import { useStreakStore } from '@/stores/streak'
 import { useTimer } from '@/composables/useTimer'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -38,6 +39,7 @@ const active = useActiveWorkoutStore()
 const exercises = useExercisesStore()
 const profileStore = useProfileStore()
 const workoutsStore = useWorkoutsStore()
+const streakStore = useStreakStore()
 const timer = useTimer()
 
 const pickerOpen = ref(false)
@@ -70,7 +72,16 @@ function onPick(exercise: Exercise) {
   )
 }
 
-function onUpdateSet(setId: string, changes: { reps?: number; weightKg?: number; type?: SetType }) {
+function onUpdateSet(
+  setId: string,
+  changes: {
+    reps?: number
+    weightKg?: number
+    type?: SetType
+    durationSeconds?: number | null
+    distanceM?: number | null
+  },
+) {
   active.updateSet(setId, changes)
 }
 
@@ -84,6 +95,7 @@ async function finish() {
   try {
     finished.value = await active.finish()
     workoutsStore.invalidate()
+    streakStore.markTrained()
     confirmFinishOpen.value = false
     timer.stop()
   } catch (e) {
@@ -144,6 +156,7 @@ function closeSummary() {
         :exercise="exercise"
         :name="nameById(exercise.exerciseId)"
         :unit="unit"
+        :cardio="exercises.byId.get(exercise.exerciseId)?.primaryMuscle === 'cardio'"
         :previous-set="(i) => active.previousSet(exercise.exerciseId, i)"
         @add-set="active.addSet(exercise.id)"
         @remove-exercise="active.removeExercise(exercise.id)"

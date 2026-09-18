@@ -14,6 +14,7 @@ import {
   workoutWorkingSets,
   percentChange,
   isWithin,
+  cardioTotals,
   type PeriodPreset,
 } from '@/domain/analytics'
 import { formatWeight } from '@/domain/units/weight'
@@ -71,6 +72,10 @@ function summarize(list: Workout[]) {
   return { sessions, volume, sets, avgMinutes: sessions ? Math.round(minutes / sessions) : 0 }
 }
 
+const isCardio = (id: string) => exercises.byId.get(id)?.primaryMuscle === 'cardio'
+const cardio = computed(() => cardioTotals(current.value, isCardio))
+const cardioPrev = computed(() => cardioTotals(before.value, isCardio))
+
 const now = computed(() => summarize(current.value))
 const prev = computed(() => summarize(before.value))
 
@@ -99,6 +104,22 @@ const stats = computed(() => [
     value: t('common.minutes', { n: now.value.avgMinutes }),
     delta: percentChange(now.value.avgMinutes, prev.value.avgMinutes),
   },
+  ...(cardio.value.seconds > 0 || cardioPrev.value.seconds > 0
+    ? [
+        {
+          key: 'cardio',
+          label: t('cardio.totalTime'),
+          value: t('common.minutes', { n: Math.round(cardio.value.seconds / 60) }),
+          delta: percentChange(cardio.value.seconds, cardioPrev.value.seconds),
+        },
+        {
+          key: 'distance',
+          label: t('cardio.totalDistance'),
+          value: `${Math.round(cardio.value.meters / 100) / 10} km`,
+          delta: percentChange(cardio.value.meters, cardioPrev.value.meters),
+        },
+      ]
+    : []),
 ])
 
 const weekly = computed(() => weeklyBuckets(current.value))

@@ -164,6 +164,8 @@ export function createActiveWorkoutStore(repo: WorkoutRepository) {
         reps: template?.reps ?? 0,
         weightKg: template?.weightKg ?? 0,
         type: 'normal',
+        durationSeconds: template?.durationSeconds ?? null,
+        distanceM: template?.distanceM ?? null,
       })
       exercise.sets.push(set)
       saveStatus.value = 'saved'

@@ -4,18 +4,29 @@ import { Plus, Trash2 } from '@lucide/vue'
 import type { SetType, WeightUnit, WorkoutExercise, WorkoutSet } from '@/domain/models'
 import { Button } from '@/components/ui/button'
 import SetRow from './SetRow.vue'
+import CardioSetRow from './CardioSetRow.vue'
 
 defineProps<{
   exercise: WorkoutExercise
   name: string
   unit: WeightUnit
+  cardio?: boolean
   previousSet: (position: number) => WorkoutSet | undefined
 }>()
 
 const emit = defineEmits<{
   addSet: []
   removeExercise: []
-  updateSet: [setId: string, changes: { reps?: number; weightKg?: number; type?: SetType }]
+  updateSet: [
+    setId: string,
+    changes: {
+      reps?: number
+      weightKg?: number
+      type?: SetType
+      durationSeconds?: number | null
+      distanceM?: number | null
+    },
+  ]
   toggleSet: [setId: string]
   removeSet: [setId: string]
 }>()
@@ -43,24 +54,36 @@ const { t } = useI18n()
     >
       <span>#</span>
       <span>{{ t('workout.columns.previous') }}</span>
-      <span class="text-center">{{ unit }}</span>
-      <span class="text-center">{{ t('workout.columns.reps') }}</span>
+      <span class="text-center">{{ cardio ? t('cardio.minutes') : unit }}</span>
+      <span class="text-center">{{
+        cardio ? t('cardio.distance') : t('workout.columns.reps')
+      }}</span>
       <span />
       <span />
     </div>
 
     <div class="grid gap-1">
-      <SetRow
-        v-for="(set, i) in exercise.sets"
-        :key="set.id"
-        :set="set"
-        :index="i"
-        :unit="unit"
-        :previous="previousSet(i)"
-        @update="emit('updateSet', set.id, $event)"
-        @toggle="emit('toggleSet', set.id)"
-        @remove="emit('removeSet', set.id)"
-      />
+      <template v-for="(set, i) in exercise.sets" :key="set.id">
+        <CardioSetRow
+          v-if="cardio"
+          :set="set"
+          :index="i"
+          :previous="previousSet(i)"
+          @update="emit('updateSet', set.id, $event)"
+          @toggle="emit('toggleSet', set.id)"
+          @remove="emit('removeSet', set.id)"
+        />
+        <SetRow
+          v-else
+          :set="set"
+          :index="i"
+          :unit="unit"
+          :previous="previousSet(i)"
+          @update="emit('updateSet', set.id, $event)"
+          @toggle="emit('toggleSet', set.id)"
+          @remove="emit('removeSet', set.id)"
+        />
+      </template>
     </div>
 
     <Button variant="secondary" class="mt-2 w-full" @click="emit('addSet')">

@@ -15,6 +15,8 @@ function set(weightKg: number, reps: number, overrides: Partial<WorkoutSet> = {}
     rpe: null,
     type: 'normal',
     completed: true,
+    durationSeconds: null,
+    distanceM: null,
     ...overrides,
   }
 }

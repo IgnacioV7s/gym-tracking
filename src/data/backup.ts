@@ -66,6 +66,8 @@ export async function exportBackup(client: SupabaseClient<Database>): Promise<Ba
             rpe: s.rpe,
             type: s.type,
             completed: s.completed,
+            durationSeconds: s.durationSeconds,
+            distanceM: s.distanceM,
           })),
         })),
       })),
@@ -159,6 +161,8 @@ export async function importBackup(
             rpe: s.rpe,
             set_type: s.type,
             completed: s.completed,
+            duration_seconds: s.durationSeconds,
+            distance_m: s.distanceM,
           })),
         )
         if (setError) throw setError

@@ -42,6 +42,8 @@ function makeRepo(previous: Workout[] = []) {
       rpe: input.rpe ?? null,
       type: input.type ?? 'normal',
       completed: input.completed ?? false,
+      durationSeconds: input.durationSeconds ?? null,
+      distanceM: input.distanceM ?? null,
     })),
     updateSet: vi.fn<WorkoutRepository['updateSet']>().mockResolvedValue(),
     removeSet: vi.fn<WorkoutRepository['removeSet']>().mockResolvedValue(),
@@ -58,6 +60,8 @@ function prevSet(position: number, reps: number, weightKg: number): WorkoutSet {
     rpe: null,
     type: 'normal',
     completed: true,
+    durationSeconds: null,
+    distanceM: null,
   }
 }
 
