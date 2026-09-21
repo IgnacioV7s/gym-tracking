@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { Workout } from '@/domain/models'
+import type { Workout, WorkoutSetInput } from '@/domain/models'
 import type { WorkoutRepository } from '@/domain/repositories'
 import { repositories } from '@/data/repositories'
 
@@ -64,6 +64,20 @@ export function createWorkoutsStore(repo: WorkoutRepository) {
       if (w) Object.assign(w, changes)
     }
 
+    async function updateSet(workoutId: string, setId: string, changes: Partial<WorkoutSetInput>) {
+      await repo.updateSet(setId, changes)
+      const w = byId.value.get(workoutId)
+      const set = w?.exercises.flatMap((e) => e.sets).find((s) => s.id === setId)
+      if (set) Object.assign(set, changes)
+    }
+
+    async function removeSet(workoutId: string, setId: string) {
+      await repo.removeSet(setId)
+      const w = byId.value.get(workoutId)
+      if (!w) return
+      for (const e of w.exercises) e.sets = e.sets.filter((s) => s.id !== setId)
+    }
+
     async function remove(id: string) {
       await repo.remove(id)
       byId.value.delete(id)
@@ -86,7 +100,19 @@ export function createWorkoutsStore(repo: WorkoutRepository) {
       error.value = null
     }
 
-    return { loading, error, loadRange, get, listByExercise, updateMeta, remove, invalidate, reset }
+    return {
+      loading,
+      error,
+      loadRange,
+      get,
+      listByExercise,
+      updateMeta,
+      updateSet,
+      removeSet,
+      remove,
+      invalidate,
+      reset,
+    }
   })
 }
 

@@ -17,6 +17,7 @@ import { useExerciseName } from '@/composables/useExerciseName'
 import { useProfileStore } from '@/stores/profile'
 import { useWorkoutsStore } from '@/stores/workouts'
 import { useStreakStore } from '@/stores/streak'
+import { useRoutinesStore } from '@/stores/routines'
 import { useTimer } from '@/composables/useTimer'
 import { useWakeLock } from '@/composables/useWakeLock'
 import { useRestAlert, requestNotificationPermission } from '@/composables/useRestAlert'
@@ -44,6 +45,7 @@ const exercises = useExercisesStore()
 const profileStore = useProfileStore()
 const workoutsStore = useWorkoutsStore()
 const streakStore = useStreakStore()
+const routinesStore = useRoutinesStore()
 const timer = useTimer()
 useWakeLock(computed(() => active.isActive))
 useRestAlert(timer.expirations, () => t('workout.restOver'))
@@ -91,6 +93,28 @@ function onUpdateSet(
   },
 ) {
   active.updateSet(setId, changes)
+}
+
+const routineTargets = ref(new Map<string, number>())
+watch(
+  () => active.workout?.routineId,
+  async (routineId) => {
+    routineTargets.value = new Map()
+    if (!routineId) return
+    const routine = await routinesStore.get(routineId)
+    if (routine) {
+      routineTargets.value = new Map(routine.exercises.map((e) => [e.exerciseId, e.targetReps]))
+    }
+  },
+  { immediate: true },
+)
+function targetRepsFor(exerciseId: string) {
+  return routineTargets.value.get(exerciseId)
+}
+
+function onApplySuggestion(workoutExerciseId: string, changes: { weightKg: number; reps: number }) {
+  active.applyToPendingSets(workoutExerciseId, changes)
+  toast.success(t('workout.suggestionApplied'))
 }
 
 async function onToggleSet(setId: string) {
@@ -182,6 +206,8 @@ function closeSummary() {
         :is-first="i === 0"
         :is-last="i === active.workout.exercises.length - 1"
         :previous-set="(i) => active.previousSet(exercise.exerciseId, i)"
+        :previous-sets="active.previousSets(exercise.exerciseId)"
+        :target-reps="targetRepsFor(exercise.exerciseId)"
         @add-set="active.addSet(exercise.id)"
         @remove-exercise="active.removeExercise(exercise.id)"
         @update-set="onUpdateSet"
@@ -189,6 +215,7 @@ function closeSummary() {
         @remove-set="active.removeSet($event)"
         @update-notes="active.updateExerciseNotes(exercise.id, $event)"
         @move="active.moveExercise(exercise.id, $event)"
+        @apply-suggestion="onApplySuggestion(exercise.id, $event)"
       />
 
       <Button variant="outline" class="w-full" @click="pickerOpen = true">

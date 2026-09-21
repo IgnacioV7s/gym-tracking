@@ -209,7 +209,11 @@
     "moveUp": "Move {name} up",
     "moveDown": "Move {name} down",
     "repeatLast": "Repeat last session",
-    "noLastSession": "No sessions to repeat yet"
+    "noLastSession": "No sessions to repeat yet",
+    "suggestion": "Suggested: {weight} × {reps}",
+    "suggestionUp": "Go up! {weight} × {reps}",
+    "applySuggestion": "Apply to pending sets",
+    "suggestionApplied": "Suggestion applied"
   },
   "routines": {
     "title": "Routines",
@@ -271,7 +275,13 @@
       "deleteDescription": "This session and all its sets will be deleted.",
       "deleted": "Session deleted",
       "startedAt": "Started",
-      "exercisesCount": "{n} exercises"
+      "exercisesCount": "{n} exercises",
+      "editHint": "Tap a value to fix it.",
+      "setUpdated": "Set updated",
+      "removeSet": "Remove set {n}",
+      "toggleSet": "Mark set {n} as {state}",
+      "done": "completed",
+      "undone": "not completed"
     }
   },
   "analytics": {
@@ -370,5 +380,14 @@
     "totalDistance": "Distance",
     "durationLabel": "Duration set {n} (minutes)",
     "distanceLabel": "Distance set {n} (km)"
+  },
+  "weekly": {
+    "title": "This week",
+    "sessions": "{n} sessions",
+    "volume": "Volume {value}",
+    "vsLast": "{delta} vs. last week",
+    "records": "{n} records",
+    "noRecords": "No records yet",
+    "empty": "No training yet this week."
   }
 }

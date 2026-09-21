@@ -4,10 +4,11 @@ import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { toast } from 'vue-sonner'
 import { format } from 'date-fns'
-import { ChevronLeft, Trash2 } from '@lucide/vue'
+import { ChevronLeft, Trash2, Check } from '@lucide/vue'
 import type { Workout } from '@/domain/models'
 import { workoutDurationMinutes, workoutVolumeKg, workoutWorkingSets } from '@/domain/analytics'
-import { formatWeight } from '@/domain/units/weight'
+import { displayWeight, formatWeight, inputToKg } from '@/domain/units/weight'
+import type { WorkoutSet } from '@/domain/models'
 import { dateFnsLocale } from '@/i18n'
 import { useWorkoutsStore } from '@/stores/workouts'
 import { useExercisesStore } from '@/stores/exercises'
@@ -61,6 +62,45 @@ async function saveMeta(changes: { name?: string; notes?: string | null }) {
     toast.success(t('common.saved'))
   } catch (e) {
     toast.error(t('common.couldNotSave'), {
+      description: e instanceof Error ? e.message : undefined,
+    })
+  }
+}
+
+async function editSet(set: WorkoutSet, changes: Partial<WorkoutSet>) {
+  if (!workout.value) return
+  try {
+    await store.updateSet(workout.value.id, set.id, changes)
+    Object.assign(set, changes)
+  } catch (e) {
+    toast.error(t('common.couldNotSave'), {
+      description: e instanceof Error ? e.message : undefined,
+    })
+  }
+}
+
+function onWeight(set: WorkoutSet, e: Event) {
+  const raw = (e.target as HTMLInputElement).value
+  const n = Number(raw)
+  if (raw === '' || !Number.isFinite(n) || n < 0) return
+  void editSet(set, { weightKg: inputToKg(n, unit.value) })
+}
+
+function onReps(set: WorkoutSet, e: Event) {
+  const raw = (e.target as HTMLInputElement).value
+  const n = Number(raw)
+  if (raw === '' || !Number.isInteger(n) || n < 0) return
+  void editSet(set, { reps: n })
+}
+
+async function removeSet(exerciseIndex: number, set: WorkoutSet) {
+  if (!workout.value) return
+  try {
+    await store.removeSet(workout.value.id, set.id)
+    const ex = workout.value.exercises[exerciseIndex]
+    if (ex) ex.sets = ex.sets.filter((s) => s.id !== set.id)
+  } catch (e) {
+    toast.error(t('common.couldNotDelete'), {
       description: e instanceof Error ? e.message : undefined,
     })
   }
@@ -155,8 +195,10 @@ const TYPE_LABEL = { normal: '', warmup: 'W', drop: 'D', failure: 'F' } as const
       </div>
     </div>
 
+    <p class="mt-4 text-xs text-muted-foreground">{{ t('history.detail.editHint') }}</p>
+
     <section
-      v-for="exercise in workout.exercises"
+      v-for="(exercise, ei) in workout.exercises"
       :key="exercise.id"
       class="mt-4 rounded-xl border bg-card p-3"
       :aria-label="nameById(exercise.exerciseId)"
@@ -175,6 +217,8 @@ const TYPE_LABEL = { normal: '', warmup: 'W', drop: 'D', failure: 'F' } as const
             <th class="w-8 py-1 text-left font-medium">#</th>
             <th class="py-1 text-right font-medium">{{ unit }}</th>
             <th class="py-1 text-right font-medium">{{ t('workout.columns.reps') }}</th>
+            <th class="w-10" />
+            <th class="w-10" />
           </tr>
         </thead>
         <tbody>
@@ -184,8 +228,61 @@ const TYPE_LABEL = { normal: '', warmup: 'W', drop: 'D', failure: 'F' } as const
             :class="!set.completed && 'text-muted-foreground line-through'"
           >
             <td class="py-1">{{ TYPE_LABEL[set.type] || i + 1 }}</td>
-            <td class="py-1 text-right tabular-nums">{{ formatWeight(set.weightKg, unit) }}</td>
-            <td class="py-1 text-right tabular-nums">{{ set.reps }}</td>
+            <td class="py-1 text-right">
+              <input
+                type="number"
+                inputmode="decimal"
+                min="0"
+                step="0.5"
+                :value="displayWeight(set.weightKg, unit)"
+                :aria-label="t('workout.set.weight', { n: i + 1, unit })"
+                class="h-9 w-20 rounded-md border bg-background px-1 text-right tabular-nums"
+                @change="onWeight(set, $event)"
+              />
+            </td>
+            <td class="py-1 text-right">
+              <input
+                type="number"
+                inputmode="numeric"
+                min="0"
+                step="1"
+                :value="set.reps"
+                :aria-label="t('workout.set.reps', { n: i + 1 })"
+                class="h-9 w-16 rounded-md border bg-background px-1 text-right tabular-nums"
+                @change="onReps(set, $event)"
+              />
+            </td>
+            <td class="py-1 text-center">
+              <button
+                type="button"
+                class="inline-flex size-9 items-center justify-center rounded-md border"
+                :class="
+                  set.completed
+                    ? 'border-primary bg-primary text-primary-foreground'
+                    : 'text-muted-foreground'
+                "
+                :aria-pressed="set.completed"
+                :aria-label="
+                  t('history.detail.toggleSet', {
+                    n: i + 1,
+                    state: set.completed ? t('history.detail.undone') : t('history.detail.done'),
+                  })
+                "
+                @click="editSet(set, { completed: !set.completed })"
+              >
+                <Check class="size-4" />
+              </button>
+            </td>
+            <td class="py-1 text-center">
+              <button
+                type="button"
+                class="inline-flex size-9 items-center justify-center rounded-md text-muted-foreground hover:text-destructive"
+                :aria-label="t('history.detail.removeSet', { n: i + 1 })"
+                @click="removeSet(ei, set)"
+              >
+                <Trash2 class="size-4" />
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>

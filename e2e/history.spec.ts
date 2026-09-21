@@ -22,6 +22,23 @@ test('a finished workout shows up in history, analytics and exercise detail', as
     .getByRole('button', { name: 'Listo' })
     .click()
 
+  // Weekly summary reflects the session.
+  await expect(page.getByTestId('weekly-card')).toContainText('1 sesiones')
+  await expect(page.getByTestId('weekly-card')).toContainText('500 kg')
+
+  // A second free session suggests progressing from last time.
+  await page.getByRole('button', { name: 'Empezar entrenamiento libre' }).click()
+  await page.getByRole('button', { name: 'Agregar ejercicio' }).click()
+  const picker2 = page.getByRole('dialog')
+  await picker2.getByLabel('Buscar ejercicio para agregar').fill('banca')
+  await picker2.getByRole('button', { name: 'Press de banca', exact: true }).click()
+  const block2 = page.getByRole('region', { name: 'Press de banca' })
+  await expect(block2).toContainText('¡Sube el peso! 102.5 kg × 5')
+  await block2.getByRole('button', { name: /Sube el peso/ }).click()
+  await expect(block2.getByLabel('Peso serie 1 (kg)')).toHaveValue('102.5')
+  await page.getByRole('button', { name: 'Descartar' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'Descartar' }).click()
+
   // History: calendar marks today and the list shows the session.
   await page.goto('/history')
   const today = new Date().getDate()
@@ -33,22 +50,33 @@ test('a finished workout shows up in history, analytics and exercise detail', as
   // Detail shows the set and allows renaming.
   await row.click()
   await expect(page).toHaveURL(/\/history\//)
-  await expect(page.getByRole('region', { name: 'Press de banca' })).toContainText('100 kg')
+  await expect(page.getByLabel('Peso serie 1 (kg)')).toHaveValue('100')
   await page.getByLabel('Nombre').fill('Pecho pesado')
   await page.getByLabel('Nombre').press('Tab')
   await expect(page.getByRole('heading', { name: 'Pecho pesado' })).toBeVisible()
 
+  // Past sets can be corrected in place.
+  const saved = page.waitForResponse(
+    (r) => r.url().includes('/rest/v1/workout_sets') && r.request().method() === 'PATCH',
+  )
+  await page.getByLabel('Peso serie 1 (kg)').fill('105')
+  await page.getByLabel('Peso serie 1 (kg)').press('Tab')
+  await saved
+  await page.reload()
+  await expect(page.getByLabel('Peso serie 1 (kg)')).toHaveValue('105')
+  await expect(page.getByText('525 kg', { exact: true })).toBeVisible()
+
   // Analytics for the current month.
   await page.goto('/analytics')
   await expect(page.getByText('Sesiones', { exact: true })).toBeVisible()
-  await expect(page.getByText('500 kg', { exact: true })).toBeVisible()
+  await expect(page.getByText('525 kg', { exact: true })).toBeVisible()
   await expect(page.getByRole('img', { name: 'Volumen por semana' })).toBeVisible()
   const record = page.getByRole('link', { name: /Press de banca/ })
-  await expect(record).toContainText('100 kg × 5')
+  await expect(record).toContainText('105 kg × 5')
 
   // Exercise detail with 1RM (epley: 100 * (1 + 5/30) = 116.67).
   await record.click()
   await expect(page).toHaveURL(/\/exercises\//)
-  await expect(page.getByText('116.75 kg', { exact: true })).toBeVisible()
+  await expect(page.getByText('122.5 kg', { exact: true })).toBeVisible()
   await expect(page.getByRole('img', { name: '1RM estimado por sesión' })).toBeVisible()
 })

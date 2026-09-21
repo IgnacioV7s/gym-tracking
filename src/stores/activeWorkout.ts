@@ -104,6 +104,10 @@ export function createActiveWorkoutStore(repo: WorkoutRepository) {
       }
     }
 
+    function previousSets(exerciseId: string): WorkoutSet[] {
+      return previousByExercise.value.get(exerciseId) ?? []
+    }
+
     function previousSet(exerciseId: string, position: number): WorkoutSet | undefined {
       return previousByExercise.value.get(exerciseId)?.[position]
     }
@@ -236,6 +240,20 @@ export function createActiveWorkoutStore(repo: WorkoutRepository) {
       return set
     }
 
+    /** Applies weight/reps to every not-yet-completed set of the exercise. */
+    function applyToPendingSets(
+      workoutExerciseId: string,
+      changes: { weightKg: number; reps: number },
+    ) {
+      const exercise = findExercise(workoutExerciseId)
+      if (!exercise) return
+      for (const s of exercise.sets) {
+        if (s.completed) continue
+        Object.assign(s, changes)
+        queueSetUpdate(s.id, changes)
+      }
+    }
+
     function updateSet(setId: string, changes: Partial<WorkoutSetInput>) {
       const found = findSet(setId)
       if (!found) return
@@ -305,9 +323,11 @@ export function createActiveWorkoutStore(repo: WorkoutRepository) {
       startFromWorkout,
       addSet,
       updateSet,
+      applyToPendingSets,
       toggleCompleted,
       removeSet,
       previousSet,
+      previousSets,
       flushAll,
       finish,
       discard,

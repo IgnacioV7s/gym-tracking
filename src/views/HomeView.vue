@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import OnboardingDialog from '@/components/onboarding/OnboardingDialog.vue'
 import StreakCard from '@/components/streak/StreakCard.vue'
+import WeeklySummaryCard from '@/components/home/WeeklySummaryCard.vue'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -91,6 +92,7 @@ async function startFree() {
   </header>
 
   <StreakCard class="mt-6" />
+  <WeeklySummaryCard class="mt-3" />
 
   <Card v-if="active.workout" class="mt-4">
     <CardHeader>

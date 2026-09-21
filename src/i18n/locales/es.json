@@ -209,7 +209,11 @@
     "moveUp": "Subir {name}",
     "moveDown": "Bajar {name}",
     "repeatLast": "Repetir última sesión",
-    "noLastSession": "Aún no tienes sesiones para repetir"
+    "noLastSession": "Aún no tienes sesiones para repetir",
+    "suggestion": "Sugerido: {weight} × {reps}",
+    "suggestionUp": "¡Sube el peso! {weight} × {reps}",
+    "applySuggestion": "Aplicar a las series pendientes",
+    "suggestionApplied": "Sugerencia aplicada"
   },
   "routines": {
     "title": "Rutinas",
@@ -271,7 +275,13 @@
       "deleteDescription": "Se borrará esta sesión y todas sus series.",
       "deleted": "Sesión eliminada",
       "startedAt": "Inicio",
-      "exercisesCount": "{n} ejercicios"
+      "exercisesCount": "{n} ejercicios",
+      "editHint": "Toca un valor para corregirlo.",
+      "setUpdated": "Serie actualizada",
+      "removeSet": "Eliminar serie {n}",
+      "toggleSet": "Marcar serie {n} como {state}",
+      "done": "completada",
+      "undone": "no completada"
     }
   },
   "analytics": {
@@ -370,5 +380,14 @@
     "totalDistance": "Distancia",
     "durationLabel": "Duración serie {n} (minutos)",
     "distanceLabel": "Distancia serie {n} (km)"
+  },
+  "weekly": {
+    "title": "Esta semana",
+    "sessions": "{n} sesiones",
+    "volume": "Volumen {value}",
+    "vsLast": "{delta} vs. la semana pasada",
+    "records": "{n} récords",
+    "noRecords": "Sin récords aún",
+    "empty": "Todavía no entrenas esta semana."
   }
 }

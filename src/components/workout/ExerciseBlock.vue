@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Plus, Trash2, ChevronUp, ChevronDown, NotebookPen } from '@lucide/vue'
+import { Plus, Trash2, ChevronUp, ChevronDown, NotebookPen, TrendingUp } from '@lucide/vue'
+import { suggestProgression } from '@/domain/analytics'
+import { formatWeight } from '@/domain/units/weight'
 import { Textarea } from '@/components/ui/textarea'
 import type { SetType, WeightUnit, WorkoutExercise, WorkoutSet } from '@/domain/models'
 import { Button } from '@/components/ui/button'
 import SetRow from './SetRow.vue'
 import CardioSetRow from './CardioSetRow.vue'
 
-defineProps<{
+const props = defineProps<{
   exercise: WorkoutExercise
   name: string
   unit: WeightUnit
@@ -16,6 +18,8 @@ defineProps<{
   isFirst?: boolean
   isLast?: boolean
   previousSet: (position: number) => WorkoutSet | undefined
+  previousSets?: WorkoutSet[]
+  targetReps?: number
 }>()
 
 const emit = defineEmits<{
@@ -34,12 +38,20 @@ const emit = defineEmits<{
   ]
   updateNotes: [notes: string | null]
   move: [delta: -1 | 1]
+  applySuggestion: [changes: { weightKg: number; reps: number }]
   toggleSet: [setId: string]
   removeSet: [setId: string]
 }>()
 
 const { t } = useI18n()
 const showNotes = ref(false)
+
+const suggestion = computed(() => {
+  if (props.cardio || !props.previousSets?.length) return null
+  const target = props.targetReps ?? Math.max(...props.previousSets.map((s) => s.reps), 1)
+  return suggestProgression(props.previousSets, target, props.unit)
+})
+const hasPending = computed(() => props.exercise.sets.some((s) => !s.completed))
 </script>
 
 <template>
@@ -83,6 +95,30 @@ const showNotes = ref(false)
         <Trash2 class="size-4" />
       </Button>
     </header>
+
+    <button
+      v-if="suggestion && hasPending"
+      type="button"
+      class="mb-2 flex w-full items-center gap-2 rounded-md border px-2 py-1.5 text-left text-xs hover:bg-accent"
+      :class="suggestion.increase ? 'border-green-600/40 bg-green-600/10' : 'border-border'"
+      :title="t('workout.applySuggestion')"
+      @click="emit('applySuggestion', { weightKg: suggestion.weightKg, reps: suggestion.reps })"
+    >
+      <TrendingUp
+        class="size-4 shrink-0"
+        :class="suggestion.increase && 'text-green-600'"
+        aria-hidden="true"
+      />
+      <span class="flex-1">
+        {{
+          t(suggestion.increase ? 'workout.suggestionUp' : 'workout.suggestion', {
+            weight: formatWeight(suggestion.weightKg, unit),
+            reps: suggestion.reps,
+          })
+        }}
+      </span>
+      <span class="text-muted-foreground">{{ t('workout.applySuggestion') }}</span>
+    </button>
 
     <Textarea
       v-if="showNotes || exercise.notes"
