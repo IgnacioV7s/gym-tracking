@@ -18,6 +18,8 @@ function makeRepo(previous: Workout[] = []) {
     listBetween: vi.fn<WorkoutRepository['listBetween']>().mockResolvedValue([]),
     get: vi.fn<WorkoutRepository['get']>().mockResolvedValue(null),
     getActive: vi.fn<WorkoutRepository['getActive']>().mockResolvedValue(null),
+    getLastFinished: vi.fn<WorkoutRepository['getLastFinished']>().mockResolvedValue(null),
+    setExercisePositions: vi.fn<WorkoutRepository['setExercisePositions']>().mockResolvedValue(),
     listByExercise: vi.fn<WorkoutRepository['listByExercise']>().mockResolvedValue(previous),
     start: vi.fn<WorkoutRepository['start']>(async ({ name, routineId }) => ({
       id: nextId('w'),

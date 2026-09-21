@@ -85,6 +85,7 @@ function onUpdateSet(
     reps?: number
     weightKg?: number
     type?: SetType
+    rpe?: number | null
     durationSeconds?: number | null
     distanceM?: number | null
   },
@@ -172,18 +173,22 @@ function closeSummary() {
 
     <div class="mt-4 grid gap-3">
       <ExerciseBlock
-        v-for="exercise in active.workout.exercises"
+        v-for="(exercise, i) in active.workout.exercises"
         :key="exercise.id"
         :exercise="exercise"
         :name="nameById(exercise.exerciseId)"
         :unit="unit"
         :cardio="exercises.byId.get(exercise.exerciseId)?.primaryMuscle === 'cardio'"
+        :is-first="i === 0"
+        :is-last="i === active.workout.exercises.length - 1"
         :previous-set="(i) => active.previousSet(exercise.exerciseId, i)"
         @add-set="active.addSet(exercise.id)"
         @remove-exercise="active.removeExercise(exercise.id)"
         @update-set="onUpdateSet"
         @toggle-set="onToggleSet"
         @remove-set="active.removeSet($event)"
+        @update-notes="active.updateExerciseNotes(exercise.id, $event)"
+        @move="active.moveExercise(exercise.id, $event)"
       />
 
       <Button variant="outline" class="w-full" @click="pickerOpen = true">

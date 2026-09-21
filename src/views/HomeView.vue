@@ -4,7 +4,8 @@ import { RouterLink, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { toast } from 'vue-sonner'
 import { format } from 'date-fns'
-import { Settings, Dumbbell, Play, ChevronRight } from '@lucide/vue'
+import { Settings, Dumbbell, Play, ChevronRight, Repeat } from '@lucide/vue'
+import { repositories } from '@/data/repositories'
 import { dateFnsLocale } from '@/i18n'
 import { useProfileStore } from '@/stores/profile'
 import { useActiveWorkoutStore } from '@/stores/activeWorkout'
@@ -37,6 +38,25 @@ async function finishOnboarding() {
 }
 
 onMounted(() => active.load())
+
+async function repeatLast() {
+  starting.value = true
+  try {
+    const last = await repositories.workouts.getLastFinished()
+    if (!last) {
+      toast(t('workout.noLastSession'))
+      return
+    }
+    await active.startFromWorkout(last, last.name)
+    await router.push({ name: 'workout' })
+  } catch (e) {
+    toast.error(t('home.couldNotStart'), {
+      description: e instanceof Error ? e.message : undefined,
+    })
+  } finally {
+    starting.value = false
+  }
+}
 
 async function startFree() {
   starting.value = true
@@ -94,6 +114,15 @@ async function startFree() {
     </Button>
     <Button variant="secondary" class="w-full" as-child>
       <RouterLink :to="{ name: 'routines' }">{{ t('home.startFromRoutine') }}</RouterLink>
+    </Button>
+    <Button
+      variant="outline"
+      class="w-full"
+      :disabled="starting || !active.loaded"
+      @click="repeatLast"
+    >
+      <Repeat class="size-4" />
+      {{ t('workout.repeatLast') }}
     </Button>
   </div>
 

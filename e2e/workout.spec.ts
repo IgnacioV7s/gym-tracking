@@ -29,7 +29,11 @@ test('free workout: add exercise, log sets, resume after reload, finish with sum
   await block.getByRole('button', { name: 'Agregar serie' }).click()
   await expect(block.getByLabel('Peso serie 2 (kg)')).toHaveValue('80')
   await expect(block.getByLabel('Repeticiones serie 2')).toHaveValue('8')
+  const completed = page.waitForResponse(
+    (r) => r.url().includes('/rest/v1/workout_sets') && r.request().method() === 'PATCH',
+  )
   await block.getByLabel('Completar serie 2').click()
+  await completed
 
   // Session survives a reload.
   await page.reload()

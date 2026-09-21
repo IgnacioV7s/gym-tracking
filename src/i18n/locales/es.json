@@ -201,7 +201,15 @@
     "alreadyActiveHint": "Termínala o descártala primero.",
     "restOver": "¡Descanso terminado!",
     "newRecords": "Nuevos récords",
-    "keepScreenOn": "Pantalla encendida durante la sesión"
+    "keepScreenOn": "Pantalla encendida durante la sesión",
+    "rpe": "RPE",
+    "rpeLabel": "RPE serie {n}",
+    "notes": "Notas del ejercicio",
+    "notesPlaceholder": "Ej: subir 2.5 kg la próxima",
+    "moveUp": "Subir {name}",
+    "moveDown": "Bajar {name}",
+    "repeatLast": "Repetir última sesión",
+    "noLastSession": "Aún no tienes sesiones para repetir"
   },
   "routines": {
     "title": "Rutinas",

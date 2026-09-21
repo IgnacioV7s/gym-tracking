@@ -48,6 +48,37 @@ export function createSupabaseWorkoutRepository(
       return data ? workoutFromRow(data) : null
     },
 
+    async getLastFinished() {
+      const { data, error } = await client
+        .from('workouts')
+        .select(WORKOUT_NESTED_SELECT)
+        .not('finished_at', 'is', null)
+        .order('started_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+      if (error) throw error
+      return data ? workoutFromRow(data) : null
+    },
+
+    async setExercisePositions(entries) {
+      // Unique (workout_id, position) is not deferred across requests, so park
+      // rows at a high offset first, then write the final positions.
+      for (const e of entries) {
+        const { error } = await client
+          .from('workout_exercises')
+          .update({ position: e.position + 1000 })
+          .eq('id', e.id)
+        if (error) throw error
+      }
+      for (const e of entries) {
+        const { error } = await client
+          .from('workout_exercises')
+          .update({ position: e.position })
+          .eq('id', e.id)
+        if (error) throw error
+      }
+    },
+
     async listByExercise(exerciseId) {
       // Inner join filters workouts to those containing the exercise; the
       // nested select still returns every exercise of each matched workout.

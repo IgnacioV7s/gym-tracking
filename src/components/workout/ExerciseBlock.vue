@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Plus, Trash2 } from '@lucide/vue'
+import { Plus, Trash2, ChevronUp, ChevronDown, NotebookPen } from '@lucide/vue'
+import { Textarea } from '@/components/ui/textarea'
 import type { SetType, WeightUnit, WorkoutExercise, WorkoutSet } from '@/domain/models'
 import { Button } from '@/components/ui/button'
 import SetRow from './SetRow.vue'
@@ -11,6 +13,8 @@ defineProps<{
   name: string
   unit: WeightUnit
   cardio?: boolean
+  isFirst?: boolean
+  isLast?: boolean
   previousSet: (position: number) => WorkoutSet | undefined
 }>()
 
@@ -23,21 +27,53 @@ const emit = defineEmits<{
       reps?: number
       weightKg?: number
       type?: SetType
+      rpe?: number | null
       durationSeconds?: number | null
       distanceM?: number | null
     },
   ]
+  updateNotes: [notes: string | null]
+  move: [delta: -1 | 1]
   toggleSet: [setId: string]
   removeSet: [setId: string]
 }>()
 
 const { t } = useI18n()
+const showNotes = ref(false)
 </script>
 
 <template>
   <section class="rounded-xl border bg-card p-3" :aria-label="name">
     <header class="mb-2 flex items-center gap-2">
       <h2 class="flex-1 truncate font-semibold">{{ name }}</h2>
+      <Button
+        variant="ghost"
+        size="icon"
+        :disabled="isFirst"
+        :aria-label="t('workout.moveUp', { name })"
+        @click="emit('move', -1)"
+      >
+        <ChevronUp class="size-4" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        :disabled="isLast"
+        :aria-label="t('workout.moveDown', { name })"
+        @click="emit('move', 1)"
+      >
+        <ChevronDown class="size-4" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        :aria-label="t('workout.notes')"
+        :aria-pressed="showNotes || !!exercise.notes"
+        :class="exercise.notes && 'text-primary'"
+        @click="showNotes = !showNotes"
+      >
+        <NotebookPen class="size-4" />
+      </Button>
       <Button
         variant="ghost"
         size="icon"
@@ -48,8 +84,19 @@ const { t } = useI18n()
       </Button>
     </header>
 
+    <Textarea
+      v-if="showNotes || exercise.notes"
+      :model-value="exercise.notes ?? ''"
+      :placeholder="t('workout.notesPlaceholder')"
+      :aria-label="t('workout.notes')"
+      rows="2"
+      maxlength="500"
+      class="mb-2"
+      @input="emit('updateNotes', ($event.target as HTMLTextAreaElement).value || null)"
+    />
+
     <div
-      class="mb-1 grid grid-cols-[2rem_1fr_4.5rem_4rem_2.75rem_2.5rem] gap-2 px-1 text-[11px] font-medium tracking-wide text-muted-foreground uppercase"
+      class="mb-1 grid grid-cols-[1.75rem_minmax(0,1fr)_4rem_3.5rem_2.75rem_2.75rem_2.25rem] gap-2 px-1 text-[11px] font-medium tracking-wide text-muted-foreground uppercase"
       aria-hidden="true"
     >
       <span>#</span>
@@ -58,6 +105,7 @@ const { t } = useI18n()
       <span class="text-center">{{
         cardio ? t('cardio.distance') : t('workout.columns.reps')
       }}</span>
+      <span class="text-center">{{ cardio ? '' : t('workout.rpe') }}</span>
       <span />
       <span />
     </div>

@@ -201,7 +201,15 @@
     "alreadyActiveHint": "Finish or discard it first.",
     "restOver": "Rest is over!",
     "newRecords": "New records",
-    "keepScreenOn": "Screen stays on during the session"
+    "keepScreenOn": "Screen stays on during the session",
+    "rpe": "RPE",
+    "rpeLabel": "RPE set {n}",
+    "notes": "Exercise notes",
+    "notesPlaceholder": "E.g. add 2.5 kg next time",
+    "moveUp": "Move {name} up",
+    "moveDown": "Move {name} down",
+    "repeatLast": "Repeat last session",
+    "noLastSession": "No sessions to repeat yet"
   },
   "routines": {
     "title": "Routines",

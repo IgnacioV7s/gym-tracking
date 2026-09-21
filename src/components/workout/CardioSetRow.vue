@@ -52,7 +52,7 @@ const inputClass =
   <div
     :class="
       cn(
-        'grid grid-cols-[2rem_1fr_4.5rem_4rem_2.75rem_2.5rem] items-center gap-2 rounded-lg px-1 py-1',
+        'grid grid-cols-[1.75rem_minmax(0,1fr)_4rem_3.5rem_2.75rem_2.75rem_2.25rem] items-center gap-2 rounded-lg px-1 py-1',
         set.completed && 'bg-primary/10',
       )
     "
@@ -80,6 +80,7 @@ const inputClass =
       :class="inputClass"
       @change="onKm"
     />
+    <span aria-hidden="true" />
     <button
       type="button"
       :class="

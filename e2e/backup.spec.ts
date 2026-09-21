@@ -24,6 +24,7 @@ test('export downloads a backup and import adds its content', async ({ page }) =
   // Import the same file back: the custom exercise is duplicated (new id).
   await page.getByTestId('backup-file').setInputFiles(path!)
   const dialog = page.getByRole('dialog', { name: '¿Importar esta copia?' })
+  await expect(dialog).toBeVisible()
   await expect(dialog).toContainText('1 ejercicios')
   await dialog.getByRole('button', { name: 'Importar datos' }).click()
   await expect(dialog).toBeHidden()

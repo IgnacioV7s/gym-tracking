@@ -14,7 +14,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  update: [changes: { reps?: number; weightKg?: number; type?: SetType }]
+  update: [changes: { reps?: number; weightKg?: number; type?: SetType; rpe?: number | null }]
   toggle: []
   remove: []
 }>()
@@ -44,6 +44,17 @@ function onWeight(e: Event) {
   emit('update', { weightKg: inputToKg(n, props.unit) })
 }
 
+function onRpe(e: Event) {
+  const raw = (e.target as HTMLInputElement).value
+  if (raw === '') {
+    emit('update', { rpe: null })
+    return
+  }
+  const n = Number(raw)
+  if (!Number.isFinite(n) || n < 1 || n > 10) return
+  emit('update', { rpe: Math.round(n * 2) / 2 })
+}
+
 function onReps(e: Event) {
   const raw = (e.target as HTMLInputElement).value
   const n = Number(raw)
@@ -56,7 +67,7 @@ function onReps(e: Event) {
   <div
     :class="
       cn(
-        'grid grid-cols-[2rem_1fr_4.5rem_4rem_2.75rem_2.5rem] items-center gap-2 rounded-lg px-1 py-1',
+        'grid grid-cols-[1.75rem_minmax(0,1fr)_4rem_3.5rem_2.75rem_2.75rem_2.25rem] items-center gap-2 rounded-lg px-1 py-1',
         set.completed && 'bg-primary/10',
       )
     "
@@ -99,6 +110,19 @@ function onReps(e: Event) {
       :aria-label="t('workout.set.reps', { n })"
       class="h-11 w-full rounded-md border bg-background px-2 text-center text-base tabular-nums focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
       @change="onReps"
+    />
+
+    <input
+      type="number"
+      inputmode="decimal"
+      min="1"
+      max="10"
+      step="0.5"
+      :value="set.rpe ?? ''"
+      :aria-label="t('workout.rpeLabel', { n })"
+      placeholder="–"
+      class="h-11 w-full rounded-md border bg-background px-1 text-center text-sm tabular-nums focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+      @change="onRpe"
     />
 
     <button

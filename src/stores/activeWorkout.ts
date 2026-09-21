@@ -66,6 +66,12 @@ export function createActiveWorkoutStore(repo: WorkoutRepository) {
 
     /** Flushes every debounced set edit. Call before finishing or leaving. */
     async function flushAll() {
+      for (const [id, timer] of noteTimers) {
+        clearTimeout(timer)
+        const notes = findExercise(id)?.notes ?? null
+        void persist(() => repo.updateExerciseNotes(id, notes))
+      }
+      noteTimers.clear()
       // Snapshot the keys: flushSet mutates the map while we iterate.
       const ids = Array.from(pendingSetUpdates.keys())
       for (const id of ids) flushSet(id)
@@ -145,6 +151,64 @@ export function createActiveWorkoutStore(repo: WorkoutRepository) {
       w.exercises.push({ id, exerciseId, position, notes: null, sets: [] })
       void loadPrevious(exerciseId)
       await addSet(id)
+    }
+
+    const noteTimers = new Map<string, ReturnType<typeof setTimeout>>()
+    function updateExerciseNotes(workoutExerciseId: string, notes: string | null) {
+      const exercise = findExercise(workoutExerciseId)
+      if (!exercise) return
+      exercise.notes = notes
+      const existing = noteTimers.get(workoutExerciseId)
+      if (existing) clearTimeout(existing)
+      noteTimers.set(
+        workoutExerciseId,
+        setTimeout(() => {
+          noteTimers.delete(workoutExerciseId)
+          void persist(() => repo.updateExerciseNotes(workoutExerciseId, notes))
+        }, SET_DEBOUNCE_MS),
+      )
+    }
+
+    /** Moves an exercise up (-1) or down (+1) and persists the new order. */
+    async function moveExercise(workoutExerciseId: string, delta: -1 | 1) {
+      const w = workout.value
+      if (!w) return
+      const from = w.exercises.findIndex((e) => e.id === workoutExerciseId)
+      const to = from + delta
+      if (from === -1 || to < 0 || to >= w.exercises.length) return
+      const list = [...w.exercises]
+      ;[list[from], list[to]] = [list[to]!, list[from]!]
+      list.forEach((e, i) => (e.position = i))
+      w.exercises = list
+      await persist(() =>
+        repo.setExercisePositions(list.map((e) => ({ id: e.id, position: e.position }))),
+      )
+    }
+
+    /** Starts a new session copying exercises and sets (uncompleted) from a past one. */
+    async function startFromWorkout(source: Workout, name: string) {
+      const created = await repo.start({ name, routineId: source.routineId })
+      workout.value = created
+      loaded.value = true
+      for (const [position, se] of source.exercises.entries()) {
+        void loadPrevious(se.exerciseId)
+        const weId = await repo.addExercise(created.id, se.exerciseId, position)
+        const sets: WorkoutSet[] = []
+        for (const [i, s] of se.sets.entries()) {
+          sets.push(
+            await repo.addSet(weId, i, {
+              reps: s.reps,
+              weightKg: s.weightKg,
+              type: s.type,
+              durationSeconds: s.durationSeconds,
+              distanceM: s.distanceM,
+            }),
+          )
+        }
+        created.exercises.push({ id: weId, exerciseId: se.exerciseId, position, notes: null, sets })
+      }
+      saveStatus.value = 'saved'
+      return created
     }
 
     async function removeExercise(workoutExerciseId: string) {
@@ -236,6 +300,9 @@ export function createActiveWorkoutStore(repo: WorkoutRepository) {
       startFromRoutine,
       addExercise,
       removeExercise,
+      updateExerciseNotes,
+      moveExercise,
+      startFromWorkout,
       addSet,
       updateSet,
       toggleCompleted,

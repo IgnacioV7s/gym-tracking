@@ -6,6 +6,8 @@ export interface WorkoutRepository {
   get(id: string): Promise<Workout | null>
   /** The user's in-progress workout, if any. */
   getActive(): Promise<Workout | null>
+  /** Most recent finished workout, if any. */
+  getLastFinished(): Promise<Workout | null>
   /** Full workouts that include the given exercise, oldest first. */
   listByExercise(exerciseId: string): Promise<Workout[]>
 
@@ -16,6 +18,8 @@ export interface WorkoutRepository {
 
   addExercise(workoutId: string, exerciseId: string, position: number): Promise<string>
   removeExercise(workoutExerciseId: string): Promise<void>
+  /** Sets positions for several exercises at once (used for reordering). */
+  setExercisePositions(entries: { id: string; position: number }[]): Promise<void>
   updateExerciseNotes(workoutExerciseId: string, notes: string | null): Promise<void>
 
   addSet(workoutExerciseId: string, position: number, input: WorkoutSetInput): Promise<WorkoutSet>
