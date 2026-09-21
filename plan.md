@@ -494,18 +494,18 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 - [x] Tests unitarios (bordes de fecha) + E2E.
 
 ### Fase 14 — Mejoras de uso diario
-- [ ] CI en GitHub Actions: lint + type-check + unit en cada push/PR.
-- [ ] Wake Lock durante la sesión activa (pantalla encendida).
-- [ ] Aviso al terminar el descanso: vibración + sonido + notificación si hay permiso.
-- [ ] Resumen al finalizar muestra récords nuevos (`newRecordsIn`).
-- [ ] RPE y notas por ejercicio en la sesión activa.
-- [ ] Reordenar ejercicios en la sesión activa.
-- [ ] Editar series de sesiones pasadas (`WorkoutDetailView`).
-- [ ] Repetir última sesión como sesión nueva.
-- [ ] Sugerencia de progresión (double progression) en la fila "anterior".
-- [ ] Resumen semanal en Inicio (sesiones, volumen vs. semana anterior, récords).
-- [ ] Gráfico de volumen por ejercicio y comparación de dos ejercicios en Análisis.
-- [ ] Peso corporal: tabla `body_weights`, registro en Inicio/Ajustes y gráfico en Análisis.
+- [x] CI en GitHub Actions: lint + type-check + unit en cada push/PR.
+- [x] Wake Lock durante la sesión activa (pantalla encendida).
+- [x] Aviso al terminar el descanso: vibración + sonido + notificación si hay permiso.
+- [x] Resumen al finalizar muestra récords nuevos (`newRecordsIn`).
+- [x] RPE y notas por ejercicio en la sesión activa.
+- [x] Reordenar ejercicios en la sesión activa.
+- [x] Editar series de sesiones pasadas (`WorkoutDetailView`).
+- [x] Repetir última sesión como sesión nueva.
+- [x] Sugerencia de progresión (double progression) en la fila "anterior".
+- [x] Resumen semanal en Inicio (sesiones, volumen vs. semana anterior, récords).
+- [x] Gráfico de volumen por ejercicio y comparación de dos ejercicios en Análisis.
+- [x] Peso corporal: tabla `body_weights`, registro y gráfico en Análisis.
 
 ### Fase 15 — Offline (cola de mutaciones)
 - [ ] Diseño: cola en IndexedDB de operaciones de sesión activa; reintento al reconectar; resolución "último gana".

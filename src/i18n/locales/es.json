@@ -315,7 +315,24 @@
     "bestSet": "Mejor serie",
     "oneRepMaxHistory": "1RM estimado por sesión",
     "history": "Historial",
-    "lastSessions": "Últimas sesiones"
+    "lastSessions": "Últimas sesiones",
+    "bodyWeight": {
+      "title": "Peso corporal",
+      "today": "Peso de hoy ({unit})",
+      "save": "Guardar peso",
+      "saved": "Peso guardado",
+      "chart": "Peso corporal por día",
+      "empty": "Registra tu peso para ver la tendencia.",
+      "latest": "Último: {value}",
+      "change": "{delta} en el período"
+    },
+    "byExercise": {
+      "title": "Volumen por ejercicio",
+      "exerciseA": "Ejercicio",
+      "exerciseB": "Comparar con",
+      "none": "— ninguno —",
+      "chart": "Volumen por sesión"
+    }
   },
   "onboarding": {
     "title": "Bienvenido a Gym Tracking",

@@ -71,6 +71,14 @@ test('a finished workout shows up in history, analytics and exercise detail', as
   await expect(page.getByText('Sesiones', { exact: true })).toBeVisible()
   await expect(page.getByText('525 kg', { exact: true })).toBeVisible()
   await expect(page.getByRole('img', { name: 'Volumen por semana' })).toBeVisible()
+  await expect(page.getByRole('img', { name: 'Volumen por sesión' })).toBeVisible()
+
+  // Body weight log.
+  await page.getByLabel('Peso de hoy (kg)').fill('80.5')
+  await page.getByRole('button', { name: 'Guardar peso' }).click()
+  await expect(page.getByText('Último: 80.5 kg')).toBeVisible()
+  await expect(page.getByRole('img', { name: 'Peso corporal por día' })).toBeVisible()
+
   const record = page.getByRole('link', { name: /Press de banca/ })
   await expect(record).toContainText('105 kg × 5')
 

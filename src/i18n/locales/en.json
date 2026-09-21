@@ -315,7 +315,24 @@
     "bestSet": "Best set",
     "oneRepMaxHistory": "Estimated 1RM per session",
     "history": "History",
-    "lastSessions": "Recent sessions"
+    "lastSessions": "Recent sessions",
+    "bodyWeight": {
+      "title": "Body weight",
+      "today": "Today's weight ({unit})",
+      "save": "Save weight",
+      "saved": "Weight saved",
+      "chart": "Body weight by day",
+      "empty": "Log your weight to see the trend.",
+      "latest": "Latest: {value}",
+      "change": "{delta} over the period"
+    },
+    "byExercise": {
+      "title": "Volume by exercise",
+      "exerciseA": "Exercise",
+      "exerciseB": "Compare with",
+      "none": "— none —",
+      "chart": "Volume per session"
+    }
   },
   "onboarding": {
     "title": "Welcome to Gym Tracking",

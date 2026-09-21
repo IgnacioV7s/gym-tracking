@@ -1,7 +1,7 @@
 -- RLS isolation tests. Run with `pnpm db:test` (supabase test db).
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(17);
+select plan(19);
 
 -- Two users. Inserting into auth.users fires handle_new_user -> profiles.
 insert into auth.users (id, email, raw_user_meta_data)
@@ -65,6 +65,9 @@ values ('aaaaaaaa-0000-4000-8000-000000000003', 0, 8, 80, true);
 
 select is((select count(*) from public.workout_sets), 1::bigint, 'alice sees her set');
 
+insert into public.body_weights (date, weight_kg) values ('2026-09-18', 80.5);
+select is((select count(*) from public.body_weights), 1::bigint, 'alice sees her body weight');
+
 insert into public.rest_days (date) values ('2026-09-18');
 select is((select count(*) from public.rest_days), 1::bigint, 'alice sees her rest day');
 
@@ -93,6 +96,7 @@ select is((select count(*) from public.routine_exercises), 0::bigint, 'bob does 
 select is((select count(*) from public.workouts), 0::bigint, 'bob does not see alice workouts');
 select is((select count(*) from public.workout_sets), 0::bigint, 'bob does not see alice sets');
 select is((select count(*) from public.rest_days), 0::bigint, 'bob does not see alice rest days');
+select is((select count(*) from public.body_weights), 0::bigint, 'bob does not see alice body weights');
 
 -- Bob cannot attach a set to alice's workout exercise even knowing the id.
 select throws_ok(

@@ -30,6 +30,8 @@ import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import BarChart from '@/components/charts/BarChart.vue'
+import ExerciseVolumeSection from '@/components/analytics/ExerciseVolumeSection.vue'
+import BodyWeightSection from '@/components/analytics/BodyWeightSection.vue'
 
 const { t } = useI18n()
 const { nameById } = useExerciseName()
@@ -279,6 +281,8 @@ const weightFmt = (v: number) => formatWeight(v, unit.value)
         </ul>
       </section>
 
+      <ExerciseVolumeSection :workouts="current" :unit="unit" />
+
       <section class="mt-6">
         <h2 class="mb-2 flex items-center gap-1 text-sm font-medium">
           <Trophy class="size-4" aria-hidden="true" />
@@ -305,5 +309,7 @@ const weightFmt = (v: number) => formatWeight(v, unit.value)
         </ul>
       </section>
     </template>
+
+    <BodyWeightSection :period="period" :unit="unit" />
   </template>
 </template>
