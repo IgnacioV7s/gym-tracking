@@ -13,10 +13,10 @@ const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 const BENCH_PRESS = 'a0000000-0000-4000-8000-000000000001'
 
 describe.skipIf(!url || !anonKey)('backup (integration)', () => {
-  const source = createClient<Database>(url, anonKey, {
+  const source = createClient<Database>(url || 'http://localhost', anonKey || 'skipped', {
     auth: { persistSession: false, autoRefreshToken: false },
   })
-  const target = createClient<Database>(url, anonKey, {
+  const target = createClient<Database>(url || 'http://localhost', anonKey || 'skipped', {
     auth: { persistSession: false, autoRefreshToken: false },
   })
 

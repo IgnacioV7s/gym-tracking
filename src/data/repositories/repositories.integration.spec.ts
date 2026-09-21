@@ -15,7 +15,7 @@ const BENCH_PRESS = 'a0000000-0000-4000-8000-000000000001'
 const SQUAT = 'a0000000-0000-4000-8000-000000000041'
 
 describe.skipIf(!url || !anonKey)('supabase repositories (integration)', () => {
-  const client = createClient<Database>(url, anonKey, {
+  const client = createClient<Database>(url || 'http://localhost', anonKey || 'skipped', {
     auth: { persistSession: false, autoRefreshToken: false },
   })
   const exercises = createSupabaseExerciseRepository(client)
