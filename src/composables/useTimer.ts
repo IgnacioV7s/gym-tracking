@@ -4,6 +4,8 @@ import { computed, onScopeDispose, ref } from 'vue'
 export function useTimer() {
   const endsAt = ref<number | null>(null)
   const now = ref(Date.now())
+  /** Incremented each time a countdown reaches zero on its own (not via stop). */
+  const expirations = ref(0)
   let interval: ReturnType<typeof setInterval> | null = null
 
   const remaining = computed(() =>
@@ -13,7 +15,11 @@ export function useTimer() {
 
   function tick() {
     now.value = Date.now()
-    if (endsAt.value !== null && now.value >= endsAt.value) stopInterval()
+    if (endsAt.value !== null && now.value >= endsAt.value) {
+      stopInterval()
+      endsAt.value = null
+      expirations.value += 1
+    }
   }
 
   function stopInterval() {
@@ -42,5 +48,5 @@ export function useTimer() {
 
   onScopeDispose(stopInterval)
 
-  return { remaining, running, start, add, stop }
+  return { remaining, running, expirations, start, add, stop }
 }

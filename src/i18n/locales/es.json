@@ -198,7 +198,10 @@
       "done": "Listo"
     },
     "alreadyActive": "Ya tienes una sesión en curso",
-    "alreadyActiveHint": "Termínala o descártala primero."
+    "alreadyActiveHint": "Termínala o descártala primero.",
+    "restOver": "¡Descanso terminado!",
+    "newRecords": "Nuevos récords",
+    "keepScreenOn": "Pantalla encendida durante la sesión"
   },
   "routines": {
     "title": "Rutinas",

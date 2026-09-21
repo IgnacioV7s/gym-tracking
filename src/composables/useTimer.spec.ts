@@ -17,6 +17,7 @@ describe('useTimer', () => {
     vi.advanceTimersByTime(2500)
     expect(timer.remaining.value).toBe(0)
     expect(timer.running.value).toBe(false)
+    expect(timer.expirations.value).toBe(1)
     scope.stop()
   })
 
@@ -30,6 +31,7 @@ describe('useTimer', () => {
     timer.stop()
     expect(timer.remaining.value).toBe(0)
     expect(timer.running.value).toBe(false)
+    expect(timer.expirations.value).toBe(0)
     scope.stop()
   })
 })

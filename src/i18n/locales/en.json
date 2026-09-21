@@ -198,7 +198,10 @@
       "done": "Done"
     },
     "alreadyActive": "You already have a session in progress",
-    "alreadyActiveHint": "Finish or discard it first."
+    "alreadyActiveHint": "Finish or discard it first.",
+    "restOver": "Rest is over!",
+    "newRecords": "New records",
+    "keepScreenOn": "Screen stays on during the session"
   },
   "routines": {
     "title": "Routines",

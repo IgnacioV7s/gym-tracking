@@ -18,6 +18,10 @@ import { useProfileStore } from '@/stores/profile'
 import { useWorkoutsStore } from '@/stores/workouts'
 import { useStreakStore } from '@/stores/streak'
 import { useTimer } from '@/composables/useTimer'
+import { useWakeLock } from '@/composables/useWakeLock'
+import { useRestAlert, requestNotificationPermission } from '@/composables/useRestAlert'
+import { newRecordsIn } from '@/domain/analytics'
+import { Trophy } from '@lucide/vue'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
@@ -41,11 +45,14 @@ const profileStore = useProfileStore()
 const workoutsStore = useWorkoutsStore()
 const streakStore = useStreakStore()
 const timer = useTimer()
+useWakeLock(computed(() => active.isActive))
+useRestAlert(timer.expirations, () => t('workout.restOver'))
 
 const pickerOpen = ref(false)
 const confirmFinishOpen = ref(false)
 const confirmDiscardOpen = ref(false)
 const finished = ref<Workout | null>(null)
+const newRecords = ref<string[]>([])
 const busy = ref(false)
 
 const unit = computed(() => profileStore.profile?.weightUnit ?? 'kg')
@@ -87,13 +94,27 @@ function onUpdateSet(
 
 async function onToggleSet(setId: string) {
   const completed = await active.toggleCompleted(setId)
-  if (completed && restSeconds.value > 0) timer.start(restSeconds.value)
+  if (completed && restSeconds.value > 0) {
+    timer.start(restSeconds.value)
+    void requestNotificationPermission()
+  }
 }
 
 async function finish() {
   busy.value = true
   try {
-    finished.value = await active.finish()
+    const done = await active.finish()
+    if (done) {
+      const ids = [...new Set(done.exercises.map((e) => e.exerciseId))]
+      const histories = await Promise.all(ids.map((id) => workoutsStore.listByExercise(id)))
+      const history = [...new Map(histories.flat().map((w) => [w.id, w])).values()]
+      newRecords.value = newRecordsIn(
+        done,
+        [...history, done],
+        profileStore.profile?.oneRepMaxFormula,
+      )
+    }
+    finished.value = done
     workoutsStore.invalidate()
     streakStore.markTrained()
     confirmFinishOpen.value = false
@@ -249,6 +270,18 @@ function closeSummary() {
           </dd>
         </div>
       </dl>
+      <div
+        v-if="newRecords.length"
+        class="rounded-lg border border-orange-500/40 bg-orange-500/10 p-3"
+      >
+        <p class="mb-1 flex items-center gap-1 text-sm font-medium">
+          <Trophy class="size-4 text-orange-500" aria-hidden="true" />
+          {{ t('workout.newRecords') }}
+        </p>
+        <ul class="text-sm">
+          <li v-for="id in newRecords" :key="id">{{ nameById(id) }}</li>
+        </ul>
+      </div>
       <DialogFooter>
         <Button @click="closeSummary">{{ t('workout.summary.done') }}</Button>
       </DialogFooter>
