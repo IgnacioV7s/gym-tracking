@@ -475,11 +475,11 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 - [x] README real: setup local con Supabase CLI, variables, despliegue.
 
 ### Fase 11 — Despliegue
-- [ ] Proyecto en supabase.com: `supabase link` + `pnpm db:push` (migraciones) y verificar que el seed global existe.
+- [x] Proyecto en supabase.com: `supabase link` + `pnpm db:push` (migraciones) y verificar que el seed global existe.
 - [ ] Auth remoto: Site URL y Redirect URLs de producción; SMTP propio (Resend o similar) para magic link y confirmaciones; decidir si se exige confirmación de email.
-- [ ] Hosting del frontend (Vercel o Netlify): build `pnpm build`, variables `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` del proyecto remoto, rewrite de SPA a `index.html`.
-- [ ] CI (GitHub Actions): lint + type-check + unit en cada push; `db push` manual.
-- [ ] Probar instalación PWA en Android/iOS contra producción.
+- [x] Hosting del frontend: `netlify.toml` y `vercel.json` (build `pnpm build`, `dist`, rewrite SPA, headers de `assetlinks.json` y del service worker) + `scripts/should-build.sh` para no gastar minutos en commits que no cambian el bundle.
+- [x] CI (GitHub Actions): lint + type-check + unit en cada push; `db push` manual.
+- [x] Probar instalación PWA en Android/iOS contra producción (Android vía APK TWA; iOS con «Añadir a pantalla de inicio» en Safari).
 
 ### Fase 12 — Cardio
 - [x] Migración: `workout_sets.duration_seconds int null`, `workout_sets.distance_m numeric(8,1) null`; seed de 7 ejercicios de cardio (con `name_en`).

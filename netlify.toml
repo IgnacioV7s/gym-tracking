@@ -3,7 +3,7 @@
   publish = "dist"
   # Exit 0 skips the build. Nothing outside these paths can change the
   # deployed site, so docs, tests and CI config do not burn build minutes.
-  ignore = "bash scripts/netlify-ignore.sh"
+  ignore = "bash scripts/should-build.sh"
 
 [build.environment]
   NODE_VERSION = "22"

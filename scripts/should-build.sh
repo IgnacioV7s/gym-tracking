@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
-# Netlify build-skip hook: exit 0 to skip the build, 1 to run it.
-# Skips commits that cannot affect the deployed bundle.
+# Build-skip hook for Netlify (`ignore`) and Vercel (`ignoreCommand`):
+# exit 0 to skip the build, 1 to run it. Skips commits that cannot affect the
+# deployed bundle.
 set -euo pipefail
 
+# Netlify passes the last built commit; on Vercel compare against the parent.
 base="${CACHED_COMMIT_REF:-}"
-head="${COMMIT_REF:-HEAD}"
+head="${COMMIT_REF:-${VERCEL_GIT_COMMIT_SHA:-HEAD}}"
+if [ -z "$base" ] && git cat-file -e "${head}^{commit}" 2>/dev/null; then
+  base="${head}^"
+fi
 
 # No cached build to compare against: always build.
 if [ -z "$base" ] || ! git cat-file -e "$base^{commit}" 2>/dev/null; then
