@@ -1,11 +1,21 @@
 [build]
   command = "pnpm build"
   publish = "dist"
+  # Exit 0 skips the build. Nothing outside these paths can change the
+  # deployed site, so docs, tests and CI config do not burn build minutes.
+  ignore = "bash scripts/netlify-ignore.sh"
 
 [build.environment]
   NODE_VERSION = "22"
 
 # Single-page app: every route is served by index.html (Vue Router history mode).
+# Only production is built; previews would double the build minutes.
+[context.deploy-preview]
+  command = "echo 'Deploy previews are disabled to save build minutes' && exit 1"
+
+[context.branch-deploy]
+  command = "echo 'Branch deploys are disabled to save build minutes' && exit 1"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
