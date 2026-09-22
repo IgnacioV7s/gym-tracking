@@ -51,3 +51,6 @@ playwright-report/
 .aider*
 skills-lock.json
 CLAUDE.local.md
+
+# Android TWA build output (contains signing keystore)
+android/

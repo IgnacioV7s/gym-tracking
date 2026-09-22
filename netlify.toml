@@ -22,6 +22,12 @@
   status = 200
 
 # Never cache the service worker or manifest so updates roll out immediately.
+# Digital Asset Links must be served as JSON for the Android app to verify.
+[[headers]]
+  for = "/.well-known/assetlinks.json"
+  [headers.values]
+    Content-Type = "application/json"
+
 [[headers]]
   for = "/sw.js"
   [headers.values]
