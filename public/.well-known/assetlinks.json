@@ -1,9 +1,11 @@
 [
   {
-    "relation": ["delegate_permission/common.handle_all_urls"],
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
     "target": {
       "namespace": "android_app",
-      "package_name": "app.netlify.ubiquitous_bombolone_4b9ee4.twa",
+      "package_name": "app.gymtracking.twa",
       "sha256_cert_fingerprints": [
         "73:AE:5B:13:3B:49:8A:CF:5F:63:8E:F1:FC:C2:52:28:9E:36:C3:3F:4D:0A:30:FD:3F:60:AE:72:BE:EB:11:A8"
       ]
