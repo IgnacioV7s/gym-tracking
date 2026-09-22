@@ -527,6 +527,7 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 
 ### Fase 17 — Distribución Android (TWA)
 - [x] `public/.well-known/assetlinks.json` con la huella SHA-256 de la clave de firma (servido como JSON por Netlify), para que el APK abra sin barra de URL.
+- [x] Hosting en Vercel (`vercel.json`); Netlify queda como respaldo con su `netlify.toml`.
 - [x] Proyecto TWA en `android/` (ignorado por git: contiene el keystore y el JDK descargado) generado con Bubblewrap desde el manifiesto de la PWA.
 - [x] `scripts/build-apk.ps1`: compila, alinea y firma el APK.
 - [ ] Play Store: requiere AAB (`bundleRelease`), cuenta de desarrollador y política de privacidad.

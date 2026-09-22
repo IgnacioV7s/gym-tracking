@@ -4,7 +4,7 @@ App móvil (PWA) para registrar entrenamientos de gimnasio y analizar el progres
 
 Stack: Vue 3 + Vite + Pinia + shadcn-vue/Tailwind, Supabase (Postgres + Auth + RLS).
 
-Producción: https://gym-tracking-ten.vercel.app
+Producción: https://gym-tracking-ten.vercel.app (Vercel). Android: `pwsh scripts/build-apk.ps1 <version>`.
 
 La arquitectura, decisiones y el plan por fases están en [`plan.md`](./plan.md). Léelo antes de contribuir.
 
