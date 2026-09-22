@@ -5,6 +5,7 @@ import { Plus, Trash2, ChevronUp, ChevronDown, NotebookPen, TrendingUp } from '@
 import { suggestProgression } from '@/domain/analytics'
 import { formatWeight } from '@/domain/units/weight'
 import { Textarea } from '@/components/ui/textarea'
+import { CARDIO_GRID, SET_GRID } from './grid'
 import type { SetType, WeightUnit, WorkoutExercise, WorkoutSet } from '@/domain/models'
 import { Button } from '@/components/ui/button'
 import SetRow from './SetRow.vue'
@@ -132,16 +133,17 @@ const hasPending = computed(() => props.exercise.sets.some((s) => !s.completed))
     />
 
     <div
-      class="mb-1 grid grid-cols-[1.75rem_minmax(0,1fr)_4rem_3.5rem_2.75rem_2.75rem_2.25rem] gap-2 px-1 text-[11px] font-medium tracking-wide text-muted-foreground uppercase"
+      class="mb-1 grid gap-2 px-1 text-[11px] font-medium tracking-wide text-muted-foreground uppercase"
+      :class="cardio ? CARDIO_GRID : SET_GRID"
       aria-hidden="true"
     >
       <span>#</span>
-      <span>{{ t('workout.columns.previous') }}</span>
-      <span class="text-center">{{ cardio ? t('cardio.minutes') : unit }}</span>
-      <span class="text-center">{{
-        cardio ? t('cardio.distance') : t('workout.columns.reps')
-      }}</span>
-      <span class="text-center">{{ cardio ? '' : t('workout.rpe') }}</span>
+      <span class="truncate">{{ t('workout.columns.previous') }}</span>
+      <span class="truncate text-center">{{ cardio ? t('cardio.minutes') : unit }}</span>
+      <span class="truncate text-center">
+        {{ cardio ? t('cardio.distance') : t('workout.columns.reps') }}
+      </span>
+      <span v-if="!cardio" class="truncate text-center">{{ t('workout.rpe') }}</span>
       <span />
       <span />
     </div>

@@ -5,6 +5,7 @@ import { Check, Trash2 } from '@lucide/vue'
 import { SET_TYPES, type SetType, type WeightUnit, type WorkoutSet } from '@/domain/models'
 import { displayWeight, formatWeight, inputToKg } from '@/domain/units/weight'
 import { cn } from '@/lib/utils'
+import { SET_GRID } from './grid'
 import { motion, popIn, DURATION, EASE } from '@/lib/motion'
 
 const props = defineProps<{
@@ -87,10 +88,7 @@ function onReps(e: Event) {
 <template>
   <div
     :class="
-      cn(
-        'grid grid-cols-[1.75rem_minmax(0,1fr)_4rem_3.5rem_2.75rem_2.75rem_2.25rem] items-center gap-2 rounded-lg px-1 py-1',
-        set.completed && 'bg-primary/10',
-      )
+      cn('grid items-center gap-2 rounded-lg px-1 py-1', SET_GRID, set.completed && 'bg-primary/10')
     "
     ref="row"
     :data-testid="`set-row-${index}`"

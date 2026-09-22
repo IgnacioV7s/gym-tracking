@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { Check, Trash2 } from '@lucide/vue'
 import type { WorkoutSet } from '@/domain/models'
 import { cn } from '@/lib/utils'
+import { CARDIO_GRID } from './grid'
 
 const props = defineProps<{ set: WorkoutSet; index: number; previous?: WorkoutSet }>()
 const emit = defineEmits<{
@@ -52,7 +53,8 @@ const inputClass =
   <div
     :class="
       cn(
-        'grid grid-cols-[1.75rem_minmax(0,1fr)_4rem_3.5rem_2.75rem_2.75rem_2.25rem] items-center gap-2 rounded-lg px-1 py-1',
+        'grid items-center gap-2 rounded-lg px-1 py-1',
+        CARDIO_GRID,
         set.completed && 'bg-primary/10',
       )
     "
@@ -80,7 +82,6 @@ const inputClass =
       :class="inputClass"
       @change="onKm"
     />
-    <span aria-hidden="true" />
     <button
       type="button"
       :class="
