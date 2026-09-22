@@ -3,7 +3,6 @@
   "buildCommand": "pnpm build",
   "outputDirectory": "dist",
   "framework": null,
-  "ignoreCommand": "bash scripts/should-build.sh",
   "rewrites": [{ "source": "/((?!.*\.).*)", "destination": "/index.html" }],
   "headers": [
     {
