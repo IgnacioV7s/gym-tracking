@@ -525,6 +525,14 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 - [x] Transiciones de ruta: slide entre tabs según su orden, fade en el resto (la vista va envuelta en un nodo raíz porque las vistas son fragments).
 - [x] Listas con entrada escalonada (`v-reveal`) y gráficos que se dibujan al aparecer.
 
+### Fase 17 — Distribución Android (TWA)
+- [x] `public/.well-known/assetlinks.json` con la huella SHA-256 de la clave de firma (servido como JSON por Netlify), para que el APK abra sin barra de URL.
+- [x] Proyecto TWA en `android/` (ignorado por git: contiene el keystore y el JDK descargado) generado con Bubblewrap desde el manifiesto de la PWA.
+- [x] `scripts/build-apk.ps1`: compila, alinea y firma el APK.
+- [ ] Play Store: requiere AAB (`bundleRelease`), cuenta de desarrollador y política de privacidad.
+
+**Importante:** `android/release.keystore` es la identidad de la app. Si se pierde, un APK nuevo no puede actualizar al instalado y hay que republicar `assetlinks.json`. Guardar una copia fuera del equipo.
+
 ---
 
 ## 9. Convenciones de Git
