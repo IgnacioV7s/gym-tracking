@@ -33,7 +33,7 @@ App para registrar entrenamientos de gimnasio y analizar el progreso:
 - Cuenta de usuario (Supabase Auth): los datos viven en la nube y se acceden desde cualquier dispositivo.
 - Instalable como PWA en el celular.
 
-**Fuera de alcance (v1):** modo offline completo, social/compartir, nutrición, wearables.
+**Fuera de alcance (v1):** lecturas offline, social/compartir, nutrición, wearables.
 
 ---
 
@@ -508,8 +508,12 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 - [x] Peso corporal: tabla `body_weights`, registro y gráfico en Análisis.
 
 ### Fase 15 — Offline (cola de mutaciones)
-- [ ] Diseño: cola en IndexedDB de operaciones de sesión activa; reintento al reconectar; resolución "último gana".
-- [ ] Implementación y E2E con red simulada.
+- [x] Ids generados en el cliente para `start`, `addExercise` y `addSet`, de modo que cada escritura sea reproducible sin respuesta del servidor.
+- [x] Cola durable en IndexedDB (`data/offline/queue.ts`) con orden de inserción.
+- [x] Decorador `createOfflineWorkoutRepository`: encola escrituras cuando no hay red, las reproduce al reconectar, corta al primer fallo de red y descarta rechazos del servidor (4xx) para no bloquear la cola.
+- [x] Banner con estado: sin conexión, cambios sin enviar, sincronizando.
+- [x] Tests unitarios de cola y decorador + E2E con `context.setOffline`.
+- [ ] v2: lecturas offline (cachear la sesión activa y el catálogo) — hoy solo las escrituras sobreviven.
 
 ---
 
@@ -614,7 +618,7 @@ Principios: testear comportamiento, no implementación. Los repositorios Supabas
 | 7   | Pesos siempre en kg en BD                   | Una sola fuente de verdad; conversión solo en presentación.                        |
 | 8   | Chart.js                                    | Ligero, tree-shakeable, bien soportado en Vue.                                     |
 | 9   | shadcn-vue + Tailwind                       | Componentes accesibles (reka-ui) copiados al repo, no dependencia opaca; velocidad de UI. |
-| 10  | Sin modo offline en v1                      | Complejidad alta (cola + conflictos); se evalúa en v2 con cola local de mutaciones. |
+| 10  | Offline solo para escrituras (Fase 15)      | La sesión en curso es lo único que no puede esperar; ids de cliente hacen cada escritura reproducible y evitan mapear ids al reconectar. Las lecturas siguen exigiendo red. |
 | 11  | i18n con vue-i18n, JSON plano por idioma     | Estándar en Vue; mensajes fuera del código; fácil de agregar idiomas. `es` default porque es el idioma del usuario principal. |
 
 ---

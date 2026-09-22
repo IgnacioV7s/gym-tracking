@@ -3,7 +3,7 @@ import { computed, watch } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useOnline } from '@vueuse/core'
-import { WifiOff } from '@lucide/vue'
+import { WifiOff, RefreshCw } from '@lucide/vue'
 import { Toaster } from '@/components/ui/sonner'
 import BottomNav from '@/components/layout/BottomNav.vue'
 import { useAuthStore } from '@/stores/auth'
@@ -13,9 +13,11 @@ import { useActiveWorkoutStore } from '@/stores/activeWorkout'
 import { useRoutinesStore } from '@/stores/routines'
 import { useWorkoutsStore } from '@/stores/workouts'
 import { useStreakStore } from '@/stores/streak'
+import { offlineWorkouts } from '@/data/repositories'
 
 const { t } = useI18n()
 const online = useOnline()
+const pending = offlineWorkouts.pending
 const route = useRoute()
 const auth = useAuthStore()
 const profileStore = useProfileStore()
@@ -51,12 +53,19 @@ watch(
 
 <template>
   <div
-    v-if="!online"
+    v-if="!online || pending > 0"
     role="status"
-    class="flex items-center justify-center gap-2 bg-destructive px-4 py-2 text-sm text-white"
+    class="flex items-center justify-center gap-2 px-4 py-2 text-center text-sm text-white"
+    :class="online ? 'bg-primary' : 'bg-destructive'"
   >
-    <WifiOff class="size-4" aria-hidden="true" />
-    {{ t('common.offline') }}
+    <RefreshCw v-if="online" class="size-4 animate-spin" aria-hidden="true" />
+    <WifiOff v-else class="size-4" aria-hidden="true" />
+    <span>
+      <template v-if="online">{{ t('common.syncing', { n: pending }) }}</template>
+      <template v-else-if="pending > 0">{{ t('common.offlinePending', { n: pending }) }}</template>
+      <template v-else>{{ t('common.offline') }}</template>
+      <span v-if="!online" class="hidden sm:inline"> · {{ t('common.offlineHint') }}</span>
+    </span>
   </div>
   <main class="mx-auto max-w-xl p-4 pb-[calc(3.5rem+env(safe-area-inset-bottom,0px)+1rem)]">
     <RouterView />

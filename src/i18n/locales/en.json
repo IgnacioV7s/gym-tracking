@@ -17,7 +17,10 @@
     "couldNotSave": "Could not save",
     "couldNotDelete": "Could not delete",
     "couldNotUpdate": "Could not update",
-    "offline": "You are offline. Changes will not be saved until you reconnect."
+    "offline": "You are offline. Changes will not be saved until you reconnect.",
+    "offlinePending": "Offline · {n} unsent changes",
+    "syncing": "Syncing {n} changes…",
+    "offlineHint": "Keep training: everything saves once you are back online."
   },
   "nav": {
     "main": "Main navigation",

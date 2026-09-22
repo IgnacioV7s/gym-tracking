@@ -92,10 +92,10 @@ export function createSupabaseWorkoutRepository(
       return data.map(workoutFromRow)
     },
 
-    async start({ name, routineId }) {
+    async start({ name, routineId, id }) {
       const { data, error } = await client
         .from('workouts')
-        .insert({ name, routine_id: routineId ?? null })
+        .insert({ ...(id ? { id } : {}), name, routine_id: routineId ?? null })
         .select(WORKOUT_NESTED_SELECT)
         .single()
       if (error) throw error
@@ -120,10 +120,10 @@ export function createSupabaseWorkoutRepository(
       if (error) throw error
     },
 
-    async addExercise(workoutId, exerciseId, position) {
+    async addExercise(workoutId, exerciseId, position, id) {
       const { data, error } = await client
         .from('workout_exercises')
-        .insert({ workout_id: workoutId, exercise_id: exerciseId, position })
+        .insert({ ...(id ? { id } : {}), workout_id: workoutId, exercise_id: exerciseId, position })
         .select('id')
         .single()
       if (error) throw error
@@ -143,10 +143,13 @@ export function createSupabaseWorkoutRepository(
       if (error) throw error
     },
 
-    async addSet(workoutExerciseId, position, input: WorkoutSetInput) {
+    async addSet(workoutExerciseId, position, input: WorkoutSetInput, id) {
       const { data, error } = await client
         .from('workout_sets')
-        .insert(workoutSetToInsert(workoutExerciseId, position, input))
+        .insert({
+          ...(id ? { id } : {}),
+          ...workoutSetToInsert(workoutExerciseId, position, input),
+        })
         .select('*')
         .single()
       if (error) throw error

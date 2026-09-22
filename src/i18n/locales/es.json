@@ -17,7 +17,10 @@
     "couldNotSave": "No se pudo guardar",
     "couldNotDelete": "No se pudo eliminar",
     "couldNotUpdate": "No se pudo actualizar",
-    "offline": "Sin conexión. Los cambios no se guardarán hasta que vuelva."
+    "offline": "Sin conexión. Los cambios no se guardarán hasta que vuelva.",
+    "offlinePending": "Sin conexión · {n} cambios sin enviar",
+    "syncing": "Sincronizando {n} cambios…",
+    "offlineHint": "Puedes seguir entrenando: se guardará solo al volver la señal."
   },
   "nav": {
     "main": "Navegación principal",
