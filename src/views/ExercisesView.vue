@@ -144,7 +144,7 @@ async function toggleArchive(exercise: Exercise) {
     {{ t('exercises.empty') }}
   </p>
 
-  <ul v-else class="mt-4 divide-y rounded-lg border">
+  <ul v-else v-reveal class="mt-4 divide-y rounded-lg border">
     <li
       v-for="{ exercise, label } in filtered"
       :key="exercise.id"

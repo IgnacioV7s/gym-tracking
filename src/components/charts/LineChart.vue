@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { Line } from 'vue-chartjs'
 import type { ChartOptions, TooltipItem } from 'chart.js'
+import { prefersReducedMotion } from '@/lib/motion'
 import { baseOptions, isDark, seriesColor } from './chartTheme'
 
 export interface LineSeries {
@@ -53,6 +54,7 @@ const options = computed<ChartOptions<'line'>>(() => {
   const fmt = props.format ?? ((v: number) => String(v))
   return {
     ...base,
+    animation: prefersReducedMotion() ? false : { duration: 600, easing: 'easeOutQuart' as const },
     plugins: {
       ...base.plugins,
       legend: {

@@ -124,3 +124,54 @@
     @apply font-sans;
   }
 }
+
+/* Route transitions: tabs slide in reading order, everything else fades. */
+.fade-enter-active,
+.fade-leave-active,
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-left-enter-from {
+  opacity: 0;
+  transform: translateX(16px);
+}
+.slide-left-leave-to {
+  opacity: 0;
+  transform: translateX(-16px);
+}
+.slide-right-enter-from {
+  opacity: 0;
+  transform: translateX(-16px);
+}
+.slide-right-leave-to {
+  opacity: 0;
+  transform: translateX(16px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-enter-active,
+  .fade-leave-active,
+  .slide-left-enter-active,
+  .slide-left-leave-active,
+  .slide-right-enter-active,
+  .slide-right-leave-active {
+    transition: none;
+  }
+  .slide-left-enter-from,
+  .slide-left-leave-to,
+  .slide-right-enter-from,
+  .slide-right-leave-to {
+    transform: none;
+  }
+}

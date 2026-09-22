@@ -224,7 +224,7 @@ const weightFmt = (v: number) => formatWeight(v, unit.value)
   </div>
 
   <template v-else>
-    <dl class="mt-4 grid grid-cols-2 gap-2">
+    <dl v-reveal class="mt-4 grid grid-cols-2 gap-2">
       <div v-for="s in stats" :key="s.key" class="rounded-xl border bg-card p-3">
         <dt class="text-xs text-muted-foreground">{{ s.label }}</dt>
         <dd class="text-xl font-semibold tabular-nums">{{ s.value }}</dd>
@@ -291,7 +291,7 @@ const weightFmt = (v: number) => formatWeight(v, unit.value)
         <p v-if="records.length === 0" class="text-sm text-muted-foreground">
           {{ t('analytics.noRecords') }}
         </p>
-        <ul v-else class="divide-y rounded-xl border bg-card">
+        <ul v-else v-reveal class="divide-y rounded-xl border bg-card">
           <li v-for="r in records" :key="r.exerciseId">
             <RouterLink
               :to="{ name: 'exercise-detail', params: { id: r.exerciseId } }"

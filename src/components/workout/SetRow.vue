@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Check, Trash2 } from '@lucide/vue'
 import { SET_TYPES, type SetType, type WeightUnit, type WorkoutSet } from '@/domain/models'
 import { displayWeight, formatWeight, inputToKg } from '@/domain/units/weight'
 import { cn } from '@/lib/utils'
+import { motion, popIn, DURATION, EASE } from '@/lib/motion'
 
 const props = defineProps<{
   set: WorkoutSet
@@ -24,6 +25,26 @@ const { t } = useI18n()
 const TYPE_LABEL: Record<SetType, string> = { normal: '', warmup: 'W', drop: 'D', failure: 'F' }
 const typeTitle = computed(() => t(`setType.${props.set.type}`))
 const n = computed(() => props.index + 1)
+
+const row = ref<HTMLElement | null>(null)
+
+// A completed set pops and draws its check; undoing is silent.
+watch(
+  () => props.set.completed,
+  (done, was) => {
+    if (!row.value || done === was) return
+    if (!done) return
+    popIn(row.value)
+    const path = row.value.querySelector('[data-check] svg > *')
+    if (path)
+      motion(path, {
+        opacity: [0.2, 1],
+        scale: [0.6, 1],
+        duration: DURATION.base,
+        ease: EASE.spring,
+      })
+  },
+)
 
 const weightValue = computed(() => displayWeight(props.set.weightKg, props.unit))
 const previousLabel = computed(() =>
@@ -71,6 +92,7 @@ function onReps(e: Event) {
         set.completed && 'bg-primary/10',
       )
     "
+    ref="row"
     :data-testid="`set-row-${index}`"
   >
     <button
@@ -139,6 +161,7 @@ function onReps(e: Event) {
       :aria-label="
         set.completed ? t('workout.set.uncomplete', { n }) : t('workout.set.complete', { n })
       "
+      data-check
       @click="emit('toggle')"
     >
       <Check class="size-5" />

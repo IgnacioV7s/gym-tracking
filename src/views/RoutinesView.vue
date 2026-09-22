@@ -112,7 +112,7 @@ async function confirmDelete() {
     </Button>
   </div>
 
-  <div v-else class="mt-4 grid gap-3">
+  <div v-else v-reveal class="mt-4 grid gap-3">
     <Card v-for="routine in routines.items" :key="routine.id">
       <CardHeader>
         <CardTitle>{{ routine.name }}</CardTitle>

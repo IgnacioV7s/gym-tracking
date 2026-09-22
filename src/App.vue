@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useOnline } from '@vueuse/core'
@@ -18,7 +18,20 @@ import { offlineWorkouts } from '@/data/repositories'
 const { t } = useI18n()
 const online = useOnline()
 const pending = offlineWorkouts.pending
+const TAB_ORDER = ['home', 'history', 'routines', 'analytics']
+const transitionName = ref('fade')
 const route = useRoute()
+
+// Slide between bottom-nav tabs in the direction they sit; everything else fades.
+watch(
+  () => route.name,
+  (to, from) => {
+    const a = TAB_ORDER.indexOf(String(from))
+    const b = TAB_ORDER.indexOf(String(to))
+    transitionName.value =
+      a !== -1 && b !== -1 && a !== b ? (b > a ? 'slide-left' : 'slide-right') : 'fade'
+  },
+)
 const auth = useAuthStore()
 const profileStore = useProfileStore()
 const exercisesStore = useExercisesStore()
@@ -68,7 +81,14 @@ watch(
     </span>
   </div>
   <main class="mx-auto max-w-xl p-4 pb-[calc(3.5rem+env(safe-area-inset-bottom,0px)+1rem)]">
-    <RouterView />
+    <!-- Views render fragments, so the transition needs a single wrapper node. -->
+    <RouterView v-slot="{ Component, route: current }">
+      <Transition :name="transitionName" mode="out-in">
+        <div :key="current.path">
+          <component :is="Component" />
+        </div>
+      </Transition>
+    </RouterView>
   </main>
   <BottomNav v-if="showNav" />
   <Toaster position="top-center" />

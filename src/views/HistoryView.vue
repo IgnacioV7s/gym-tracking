@@ -177,7 +177,7 @@ function describe(w: Workout) {
     <h2 class="mb-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
       {{ week.label }} · {{ t('history.sessions', { n: week.items.length }) }}
     </h2>
-    <ul class="divide-y rounded-lg border">
+    <ul v-reveal class="divide-y rounded-lg border">
       <li v-for="w in week.items" :key="w.id">
         <RouterLink
           :to="{ name: 'workout-detail', params: { id: w.id } }"

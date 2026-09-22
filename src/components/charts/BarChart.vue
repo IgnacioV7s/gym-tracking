@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { Bar } from 'vue-chartjs'
 import type { ChartOptions, TooltipItem } from 'chart.js'
+import { prefersReducedMotion } from '@/lib/motion'
 import { baseOptions, seriesColor } from './chartTheme'
 
 const props = defineProps<{
@@ -32,6 +33,7 @@ const options = computed<ChartOptions<'bar'>>(() => {
   const fmt = props.format ?? ((v: number) => String(v))
   return {
     ...base,
+    animation: prefersReducedMotion() ? false : { duration: 600, easing: 'easeOutQuart' as const },
     plugins: {
       ...base.plugins,
       tooltip: {

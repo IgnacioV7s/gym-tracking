@@ -19,6 +19,8 @@ import { useWorkoutsStore } from '@/stores/workouts'
 import { useStreakStore } from '@/stores/streak'
 import { useRoutinesStore } from '@/stores/routines'
 import { useTimer } from '@/composables/useTimer'
+import { motion, countUp, revealList, DURATION, EASE } from '@/lib/motion'
+import { nextTick } from 'vue'
 import { useWakeLock } from '@/composables/useWakeLock'
 import { useRestAlert, requestNotificationPermission } from '@/composables/useRestAlert'
 import { newRecordsIn } from '@/domain/analytics'
@@ -55,6 +57,30 @@ const confirmFinishOpen = ref(false)
 const confirmDiscardOpen = ref(false)
 const finished = ref<Workout | null>(null)
 const newRecords = ref<string[]>([])
+const summaryEl = ref<HTMLElement | null>(null)
+
+// Animate the summary once it is on screen: numbers count up, records cascade.
+watch(finished, async (done) => {
+  if (!done) return
+  await nextTick()
+  const root = summaryEl.value
+  if (!root) return
+  for (const el of root.querySelectorAll<HTMLElement>('[data-count]')) {
+    const to = Number(el.dataset.count)
+    const suffix = el.dataset.suffix ?? ''
+    if (Number.isFinite(to)) countUp(el, to, { format: (v) => `${Math.round(v)}${suffix}` })
+  }
+  const trophy = root.querySelector('[data-trophy]')
+  if (trophy)
+    motion(trophy, {
+      rotate: [-20, 0],
+      scale: [0.6, 1],
+      duration: DURATION.slow,
+      ease: EASE.spring,
+    })
+  const records = root.querySelectorAll('[data-record]')
+  if (records.length) revealList(Array.from(records) as HTMLElement[], { delay: 120 })
+})
 const busy = ref(false)
 
 const unit = computed(() => profileStore.profile?.weightUnit ?? 'kg')
@@ -237,6 +263,7 @@ function closeSummary() {
     <RestTimer
       :remaining="timer.remaining.value"
       :running="timer.running.value"
+      :total="restSeconds"
       @add="timer.add($event)"
       @stop="timer.stop()"
     />
@@ -286,18 +313,30 @@ function closeSummary() {
         <DialogTitle>{{ t('workout.summary.title') }}</DialogTitle>
         <DialogDescription>{{ finished.name }}</DialogDescription>
       </DialogHeader>
-      <dl class="grid grid-cols-3 gap-3 text-center">
+      <dl ref="summaryEl" class="grid grid-cols-3 gap-3 text-center">
         <div>
           <dt class="text-xs text-muted-foreground">{{ t('workout.summary.volume') }}</dt>
-          <dd class="text-lg font-semibold">{{ formatWeight(workoutVolumeKg(finished), unit) }}</dd>
+          <dd
+            class="text-lg font-semibold tabular-nums"
+            :data-count="Math.round(workoutVolumeKg(finished))"
+            :data-suffix="` ${unit}`"
+          >
+            {{ formatWeight(workoutVolumeKg(finished), unit) }}
+          </dd>
         </div>
         <div>
           <dt class="text-xs text-muted-foreground">{{ t('workout.summary.sets') }}</dt>
-          <dd class="text-lg font-semibold">{{ workoutWorkingSets(finished) }}</dd>
+          <dd class="text-lg font-semibold tabular-nums" :data-count="workoutWorkingSets(finished)">
+            {{ workoutWorkingSets(finished) }}
+          </dd>
         </div>
         <div>
           <dt class="text-xs text-muted-foreground">{{ t('workout.summary.duration') }}</dt>
-          <dd class="text-lg font-semibold">
+          <dd
+            class="text-lg font-semibold tabular-nums"
+            :data-count="workoutDurationMinutes(finished)"
+            data-suffix=" min"
+          >
             {{ t('common.minutes', { n: workoutDurationMinutes(finished) }) }}
           </dd>
         </div>
@@ -307,11 +346,11 @@ function closeSummary() {
         class="rounded-lg border border-orange-500/40 bg-orange-500/10 p-3"
       >
         <p class="mb-1 flex items-center gap-1 text-sm font-medium">
-          <Trophy class="size-4 text-orange-500" aria-hidden="true" />
+          <Trophy data-trophy class="size-4 text-orange-500" aria-hidden="true" />
           {{ t('workout.newRecords') }}
         </p>
         <ul class="text-sm">
-          <li v-for="id in newRecords" :key="id">{{ nameById(id) }}</li>
+          <li v-for="id in newRecords" :key="id" data-record>{{ nameById(id) }}</li>
         </ul>
       </div>
       <DialogFooter>

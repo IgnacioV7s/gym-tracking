@@ -49,6 +49,7 @@ App para registrar entrenamientos de gimnasio y analizar el progreso:
 | Backend         | **Supabase** (Postgres + Auth + PostgREST)        | Proyecto propio; CLI para migraciones y tipos      |
 | Cliente BD      | `@supabase/supabase-js` v2                        | Tipos generados con `supabase gen types`           |
 | Auth            | Supabase Auth: email + password, magic link       | Sesión persistida por el SDK (localStorage)        |
+| Animaciones     | **anime.js v4** (`src/lib/motion.ts`)             | Todo pasa por `motion()`, que respeta `prefers-reduced-motion` |
 | UI              | **shadcn-vue** + Tailwind CSS v4 + lucide icons   | Componentes en `components/ui/` (generados, no editar a mano; `pnpm exec shadcn-vue add <c>`) |
 | Gráficos        | **Chart.js** + `vue-chartjs`                      | Solo se importa en vistas de análisis              |
 | Fechas          | **date-fns**                                      | Nunca `moment`; timestamps ISO/`timestamptz`       |
@@ -514,6 +515,15 @@ Cada fase termina con la app funcionando y tests en verde. Marcar `[x]` al compl
 - [x] Banner con estado: sin conexión, cambios sin enviar, sincronizando.
 - [x] Tests unitarios de cola y decorador + E2E con `context.setOffline`.
 - [ ] v2: lecturas offline (cachear la sesión activa y el catálogo) — hoy solo las escrituras sobreviven.
+
+### Fase 16 — Animaciones
+- [x] `lib/motion.ts`: helpers sobre anime.js que respetan `prefers-reduced-motion` (instantáneo si está activo), con tests.
+- [x] Serie completada: pop de la fila y check que aparece.
+- [x] Racha: llama que late, pulso al crecer y número que cuenta.
+- [x] Resumen de sesión: volumen/series/duración cuentan desde 0; récords en cascada con la copa girando.
+- [x] Descanso: anillo de progreso y shake en los últimos 3 s.
+- [x] Transiciones de ruta: slide entre tabs según su orden, fade en el resto (la vista va envuelta en un nodo raíz porque las vistas son fragments).
+- [x] Listas con entrada escalonada (`v-reveal`) y gráficos que se dibujan al aparecer.
 
 ---
 
