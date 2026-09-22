@@ -32,3 +32,19 @@ describe('op queue', () => {
     expect(await queue.size()).toBe(0)
   })
 })
+
+describe('op queue without IndexedDB', () => {
+  it('degrades to a no-op instead of throwing', async () => {
+    const original = globalThis.indexedDB
+    // @ts-expect-error simulating a runtime where the API is missing
+    delete globalThis.indexedDB
+    try {
+      const queue = createOpQueue()
+      await expect(queue.enqueue('addSet', [])).resolves.toBeUndefined()
+      await expect(queue.list()).resolves.toEqual([])
+      await expect(queue.size()).resolves.toBe(0)
+    } finally {
+      globalThis.indexedDB = original
+    }
+  })
+})

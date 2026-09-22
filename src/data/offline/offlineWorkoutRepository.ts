@@ -1,7 +1,7 @@
 import { ref, type Ref } from 'vue'
 import type { Workout, WorkoutSet, WorkoutSetInput } from '@/domain/models'
 import type { WorkoutRepository } from '@/domain/repositories'
-import { createOpQueue, type OpQueue } from './queue'
+import { createOpQueue, isQueueSupported, type OpQueue } from './queue'
 
 /** Writes that can be deferred; reads always need the network. */
 const QUEUEABLE = [
@@ -46,24 +46,33 @@ export function createOfflineWorkoutRepository(
   let flushing: Promise<void> | null = null
 
   async function refreshPending() {
-    pending.value = await queue.size().catch(() => 0)
+    try {
+      pending.value = await queue.size()
+    } catch {
+      pending.value = 0
+    }
   }
   void refreshPending()
+
+  async function defer<T>(method: string, args: unknown[], offlineValue: T): Promise<T> {
+    // With no durable queue the write is lost anyway; surface it as an error
+    // instead of pretending it was saved.
+    if (!isQueueSupported()) throw new Error(`Cannot defer ${method}: no offline storage`)
+    await queue.enqueue(method, args)
+    await refreshPending()
+    return offlineValue
+  }
 
   async function run<T>(method: Queueable, args: unknown[], offlineValue: T): Promise<T> {
     const call = inner[method] as (...a: unknown[]) => Promise<T>
     if (typeof navigator !== 'undefined' && !navigator.onLine) {
-      await queue.enqueue(method, args)
-      await refreshPending()
-      return offlineValue
+      return defer(method, args, offlineValue)
     }
     try {
       return await call.apply(inner, args)
     } catch (error) {
       if (!isNetworkError(error)) throw error
-      await queue.enqueue(method, args)
-      await refreshPending()
-      return offlineValue
+      return defer(method, args, offlineValue)
     }
   }
 
@@ -91,7 +100,7 @@ export function createOfflineWorkoutRepository(
     return flushing
   }
 
-  if (typeof window !== 'undefined') {
+  if (typeof window !== 'undefined' && isQueueSupported()) {
     window.addEventListener('online', () => void flush())
     void flush()
   }
@@ -118,17 +127,13 @@ export function createOfflineWorkoutRepository(
         exercises: [],
       }
       if (typeof navigator !== 'undefined' && !navigator.onLine) {
-        await queue.enqueue('start', [{ ...input, id }])
-        await refreshPending()
-        return local
+        return defer('start', [{ ...input, id }], local)
       }
       try {
         return await inner.start({ ...input, id })
       } catch (error) {
         if (!isNetworkError(error)) throw error
-        await queue.enqueue('start', [{ ...input, id }])
-        await refreshPending()
-        return local
+        return defer('start', [{ ...input, id }], local)
       }
     },
 

@@ -17,8 +17,17 @@ const DB_NAME = 'gym-tracking-offline'
 const STORE = 'pending-ops'
 const DB_VERSION = 1
 
+/** IndexedDB is missing in non-browser runtimes and blocked in some privacy modes. */
+export function isQueueSupported(): boolean {
+  return typeof indexedDB !== 'undefined'
+}
+
 function openDb(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
+    if (!isQueueSupported()) {
+      reject(new Error('IndexedDB unavailable'))
+      return
+    }
     const request = indexedDB.open(DB_NAME, DB_VERSION)
     request.onupgradeneeded = () => {
       const db = request.result
@@ -46,12 +55,17 @@ function done(tx: IDBTransaction): Promise<void> {
   })
 }
 
+/**
+ * Without IndexedDB the queue turns into a no-op: writes still go straight to
+ * the network, they just cannot be deferred.
+ */
 export function createOpQueue() {
   let dbPromise: Promise<IDBDatabase> | null = null
   const db = () => (dbPromise ??= openDb())
 
   return {
     async enqueue(method: string, args: unknown[]): Promise<void> {
+      if (!isQueueSupported()) return
       const conn = await db()
       const tx = conn.transaction(STORE, 'readwrite')
       tx.objectStore(STORE).add({ method, args, queuedAt: new Date().toISOString() })
@@ -59,12 +73,14 @@ export function createOpQueue() {
     },
 
     async list(): Promise<QueuedOp[]> {
+      if (!isQueueSupported()) return []
       const conn = await db()
       const tx = conn.transaction(STORE, 'readonly')
       return promisify(tx.objectStore(STORE).getAll() as IDBRequest<QueuedOp[]>)
     },
 
     async remove(seq: number): Promise<void> {
+      if (!isQueueSupported()) return
       const conn = await db()
       const tx = conn.transaction(STORE, 'readwrite')
       tx.objectStore(STORE).delete(seq)
@@ -72,6 +88,7 @@ export function createOpQueue() {
     },
 
     async clear(): Promise<void> {
+      if (!isQueueSupported()) return
       const conn = await db()
       const tx = conn.transaction(STORE, 'readwrite')
       tx.objectStore(STORE).clear()
@@ -79,6 +96,7 @@ export function createOpQueue() {
     },
 
     async size(): Promise<number> {
+      if (!isQueueSupported()) return 0
       const conn = await db()
       const tx = conn.transaction(STORE, 'readonly')
       return promisify(tx.objectStore(STORE).count())
